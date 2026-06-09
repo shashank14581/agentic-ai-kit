@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-ai"
+version = "0.1.0"
+description = "A progressive framework for building agentic AI systems with Google Gemini."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Shashank", email = "shashank14581@github.com" }]
+keywords = ["agentic-ai", "llm", "gemini", "agents", "rag", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai>=1.0.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "build", "twine"]
+
+[project.urls]
+Homepage = "https://github.com/shashank14581/Agentic-AI"
+Repository = "https://github.com/shashank14581/Agentic-AI"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agentic_ai*"]
+
+[tool.setuptools.package-data]
+"agentic_ai" = ["py.typed"]

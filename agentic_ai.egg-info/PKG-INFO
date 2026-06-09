@@ -1,3 +1,29 @@
+Metadata-Version: 2.4
+Name: agentic-ai
+Version: 0.1.0
+Summary: A progressive framework for building agentic AI systems with Google Gemini.
+Author-email: Shashank <shashank14581@github.com>
+License: MIT
+Project-URL: Homepage, https://github.com/shashank14581/Agentic-AI
+Project-URL: Repository, https://github.com/shashank14581/Agentic-AI
+Keywords: agentic-ai,llm,gemini,agents,rag,mcp
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: google-genai>=1.0.0
+Requires-Dist: requests>=2.31.0
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+
 # agentic-ai
 
 A progressive Python framework for building agentic AI systems with **Google Gemini**.
