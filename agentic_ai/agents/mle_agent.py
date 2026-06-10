@@ -366,6 +366,7 @@ class MLEAgent(BaseAgent):
         random_state: int = 42,
         drop_columns: list[str] | None = None,
         stream: bool = True,
+        interpret: bool = True,
     ) -> dict[str, Any]:
         """Train models, evaluate them, and generate an MLE interpretation."""
 
@@ -376,6 +377,9 @@ class MLEAgent(BaseAgent):
             random_state=random_state,
             drop_columns=drop_columns,
         )
+        if not interpret:
+            model_result["llm_interpretation"] = None
+            return model_result
 
         interpretation_prompt = f"""
 A model has been trained.

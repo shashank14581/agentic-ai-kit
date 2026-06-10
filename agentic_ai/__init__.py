@@ -9,6 +9,7 @@ from agentic_ai.agents.reasoning_agent import ReasoningAgent
 from agentic_ai.memory.short_term import ShortTermMemory
 from agentic_ai.memory.long_term import LongTermMemory
 from agentic_ai.memory.shared import SharedMemory
+from agentic_ai.agents.auto_model_agent import AutoModelAgent
 
 __version__ = "0.1.0"
 __all__ = [
@@ -19,4 +20,5 @@ __all__ = [
     "ShortTermMemory",
     "LongTermMemory",
     "SharedMemory",
+    "AutoModelAgent",
 ]
