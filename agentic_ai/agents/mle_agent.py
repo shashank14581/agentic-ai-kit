@@ -1,5 +1,13 @@
 """
 MLEAgent: dataframe-aware machine learning engineering specialist agent.
+
+This agent can:
+- profile a dataframe
+- summarize target and features
+- scan for leakage-prone columns
+- train baseline ML models
+- evaluate models
+- return the best fitted pipeline
 """
 
 from __future__ import annotations
@@ -8,15 +16,31 @@ from typing import Any
 
 import pandas as pd
 
+from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    mean_absolute_error,
+    mean_squared_error,
+    r2_score,
+    roc_auc_score,
+)
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
 from agentic_ai.agents.base import BaseAgent
 
 
 _MLE_PROMPT = """
 You are an elite Machine Learning Engineer.
 
-You help users design ML systems from pandas DataFrames.
+You help users build, evaluate, and interpret ML models from pandas DataFrames.
 
-You are expected to reason using:
+You reason using:
 - target definition
 - feature columns
 - label quality
@@ -24,6 +48,7 @@ You are expected to reason using:
 - train/test strategy
 - baseline models
 - evaluation metrics
+- model comparison
 - deployment constraints
 - monitoring and drift
 
@@ -33,19 +58,20 @@ PROBLEM DEFINITION
 DATA READ
 TARGET AND FEATURES
 LEAKAGE RISKS
-MODELING STRATEGY
-EVALUATION PLAN
+MODEL RESULTS
+BEST MODEL
+INTERPRETATION
 DEPLOYMENT CONSIDERATIONS
 MONITORING PLAN
-IMPLEMENTATION STEPS
+NEXT STEPS
 
 Do not invent model performance.
-If dataframe context is provided, use it explicitly.
+If model results are provided, use them explicitly.
 """.strip()
 
 
 class MLEAgent(BaseAgent):
-    """ML-engineering specialist agent with dataframe tools."""
+    """ML-engineering specialist agent with dataframe and modeling tools."""
 
     def __init__(
         self,
@@ -87,9 +113,7 @@ class MLEAgent(BaseAgent):
             "column_names": list(df.columns),
             "dtypes": {col: str(dtype) for col, dtype in df.dtypes.items()},
             "missing_values": df.isna().sum().to_dict(),
-            "missing_percentage": (
-                df.isna().mean().mul(100).round(2).to_dict()
-            ),
+            "missing_percentage": df.isna().mean().mul(100).round(2).to_dict(),
             "duplicate_rows": int(df.duplicated().sum()),
             "numeric_columns": list(df.select_dtypes(include="number").columns),
             "categorical_columns": list(
@@ -100,11 +124,7 @@ class MLEAgent(BaseAgent):
             ),
         }
 
-    def target_summary(
-        self,
-        df: pd.DataFrame,
-        target_col: str,
-    ) -> dict[str, Any]:
+    def target_summary(self, df: pd.DataFrame, target_col: str) -> dict[str, Any]:
         """Summarize the target variable."""
 
         self._validate_dataframe(df)
@@ -120,20 +140,18 @@ class MLEAgent(BaseAgent):
             "unique_values": int(target.nunique(dropna=True)),
         }
 
-        if pd.api.types.is_numeric_dtype(target):
-            summary["type_guess"] = "regression_or_numeric_classification"
-            summary["describe"] = target.describe().round(4).to_dict()
-        else:
+        if self._is_classification_target(target):
             summary["type_guess"] = "classification"
-            summary["class_distribution"] = (
-                target.value_counts(dropna=False).to_dict()
-            )
+            summary["class_distribution"] = target.value_counts(dropna=False).to_dict()
             summary["class_percentage"] = (
                 target.value_counts(normalize=True, dropna=False)
                 .mul(100)
                 .round(2)
                 .to_dict()
             )
+        else:
+            summary["type_guess"] = "regression"
+            summary["describe"] = target.describe().round(4).to_dict()
 
         return summary
 
@@ -172,27 +190,16 @@ class MLEAgent(BaseAgent):
 
         missing_pct = df.isna().mean().mul(100)
 
-        return (
-            missing_pct[missing_pct >= threshold]
-            .round(2)
-            .to_dict()
-        )
+        return missing_pct[missing_pct >= threshold].round(2).to_dict()
 
     def constant_features(self, df: pd.DataFrame) -> list[str]:
         """Return columns with one or zero unique non-null values."""
 
         self._validate_dataframe(df)
 
-        return [
-            col for col in df.columns
-            if df[col].nunique(dropna=True) <= 1
-        ]
+        return [col for col in df.columns if df[col].nunique(dropna=True) <= 1]
 
-    def leakage_scan(
-        self,
-        df: pd.DataFrame,
-        target_col: str,
-    ) -> dict[str, Any]:
+    def leakage_scan(self, df: pd.DataFrame, target_col: str) -> dict[str, Any]:
         """Heuristic scan for possible leakage-prone columns."""
 
         self._validate_dataframe(df)
@@ -231,47 +238,332 @@ class MLEAgent(BaseAgent):
             "note": "This is a heuristic scan. Confirm leakage using business timing.",
         }
 
-    def ml_dataframe_context(
+    # ------------------------------------------------------------------
+    # Modeling tools
+    # ------------------------------------------------------------------
+
+    def train_model(
         self,
         df: pd.DataFrame,
         target_col: str,
-    ) -> str:
-        """Create ML-ready dataframe context for the LLM."""
+        test_size: float = 0.2,
+        random_state: int = 42,
+        drop_columns: list[str] | None = None,
+    ) -> dict[str, Any]:
+        """Train baseline ML models and return the best fitted pipeline.
 
-        context = {
-            "profile": self.profile_dataframe(df),
-            "target_summary": self.target_summary(df, target_col),
-            "feature_summary": self.feature_summary(df, target_col),
-            "leakage_scan": self.leakage_scan(df, target_col),
+        Returns:
+            A dictionary containing problem type, model comparison,
+            best model name, best pipeline, and test predictions.
+        """
+
+        self._validate_dataframe(df)
+        self._validate_columns(df, [target_col])
+
+        data = df.copy()
+
+        if drop_columns:
+            self._validate_columns(data, drop_columns)
+            data = data.drop(columns=drop_columns)
+
+        data = data.dropna(subset=[target_col])
+
+        y = data[target_col]
+        X = data.drop(columns=[target_col])
+
+        X = self._drop_unusable_features(X)
+
+        if X.empty:
+            raise ValueError("No usable feature columns found after preprocessing.")
+
+        problem_type = self.detect_problem_type(y)
+
+        stratify = y if problem_type == "classification" and y.nunique() > 1 else None
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=test_size,
+            random_state=random_state,
+            stratify=stratify,
+        )
+
+        preprocessor = self._build_preprocessor(X_train)
+
+        models = self._get_baseline_models(problem_type, random_state)
+
+        results = []
+
+        best_model_name = None
+        best_pipeline = None
+        best_score = None
+        best_predictions = None
+        best_probabilities = None
+
+        for model_name, estimator in models.items():
+            pipeline = Pipeline(
+                steps=[
+                    ("preprocessor", preprocessor),
+                    ("model", estimator),
+                ]
+            )
+
+            pipeline.fit(X_train, y_train)
+
+            y_pred = pipeline.predict(X_test)
+
+            y_proba = None
+            if problem_type == "classification" and hasattr(pipeline, "predict_proba"):
+                try:
+                    y_proba = pipeline.predict_proba(X_test)[:, 1]
+                except Exception:
+                    y_proba = None
+
+            metrics = self._evaluate_model(
+                problem_type=problem_type,
+                y_true=y_test,
+                y_pred=y_pred,
+                y_proba=y_proba,
+            )
+
+            score = self._selection_score(problem_type, metrics)
+
+            results.append(
+                {
+                    "model_name": model_name,
+                    "metrics": metrics,
+                    "selection_score": score,
+                }
+            )
+
+            if best_score is None or score > best_score:
+                best_score = score
+                best_model_name = model_name
+                best_pipeline = pipeline
+                best_predictions = y_pred
+                best_probabilities = y_proba
+
+        return {
+            "problem_type": problem_type,
+            "target_column": target_col,
+            "train_rows": int(X_train.shape[0]),
+            "test_rows": int(X_test.shape[0]),
+            "features_used": list(X.columns),
+            "model_comparison": results,
+            "best_model": best_model_name,
+            "best_score": best_score,
+            "best_pipeline": best_pipeline,
+            "test_predictions": best_predictions,
+            "test_probabilities": best_probabilities,
         }
 
-        return str(context)
-
-    def design_modeling_plan(
+    def create_model(
         self,
         df: pd.DataFrame,
         target_col: str,
-        objective: str,
+        objective: str | None = None,
+        test_size: float = 0.2,
+        random_state: int = 42,
+        drop_columns: list[str] | None = None,
         stream: bool = True,
-    ) -> str:
-        """Design an ML plan using dataframe context."""
+    ) -> dict[str, Any]:
+        """Train models, evaluate them, and generate an MLE interpretation."""
 
-        context = self.ml_dataframe_context(df, target_col)
+        model_result = self.train_model(
+            df=df,
+            target_col=target_col,
+            test_size=test_size,
+            random_state=random_state,
+            drop_columns=drop_columns,
+        )
 
-        prompt = f"""
-Design a machine learning plan.
+        interpretation_prompt = f"""
+A model has been trained.
 
 OBJECTIVE:
-{objective}
+{objective or "Not provided"}
 
-TARGET COLUMN:
-{target_col}
+DATAFRAME PROFILE:
+{self.profile_dataframe(df)}
 
-DATAFRAME CONTEXT:
-{context}
+TARGET SUMMARY:
+{self.target_summary(df, target_col)}
+
+FEATURE SUMMARY:
+{self.feature_summary(df, target_col)}
+
+LEAKAGE SCAN:
+{self.leakage_scan(df, target_col)}
+
+MODEL RESULT:
+{self._safe_model_result_for_llm(model_result)}
+
+Explain the model result and recommend next steps.
 """.strip()
 
-        return self.think(prompt, stream=stream)
+        model_result["llm_interpretation"] = self.think(
+            interpretation_prompt,
+            stream=stream,
+        )
+
+        return model_result
+
+    def detect_problem_type(self, y: pd.Series) -> str:
+        """Detect whether the task is classification or regression."""
+
+        if self._is_classification_target(y):
+            return "classification"
+
+        return "regression"
+
+    # ------------------------------------------------------------------
+    # Internal helpers
+    # ------------------------------------------------------------------
+
+    def _build_preprocessor(self, X: pd.DataFrame) -> ColumnTransformer:
+        """Build a preprocessing pipeline for numeric and categorical features."""
+
+        numeric_features = list(X.select_dtypes(include="number").columns)
+
+        categorical_features = list(
+            X.select_dtypes(include=["object", "category", "bool"]).columns
+        )
+
+        numeric_pipeline = Pipeline(
+            steps=[
+                ("imputer", SimpleImputer(strategy="median")),
+                ("scaler", StandardScaler()),
+            ]
+        )
+
+        categorical_pipeline = Pipeline(
+            steps=[
+                ("imputer", SimpleImputer(strategy="most_frequent")),
+                ("encoder", OneHotEncoder(handle_unknown="ignore")),
+            ]
+        )
+
+        return ColumnTransformer(
+            transformers=[
+                ("numeric", numeric_pipeline, numeric_features),
+                ("categorical", categorical_pipeline, categorical_features),
+            ],
+            remainder="drop",
+        )
+
+    def _get_baseline_models(
+        self,
+        problem_type: str,
+        random_state: int,
+    ) -> dict[str, Any]:
+        """Return baseline models for classification or regression."""
+
+        if problem_type == "classification":
+            return {
+                "logistic_regression": LogisticRegression(max_iter=1000),
+                "random_forest_classifier": RandomForestClassifier(
+                    n_estimators=200,
+                    random_state=random_state,
+                    n_jobs=-1,
+                ),
+            }
+
+        return {
+            "linear_regression": LinearRegression(),
+            "random_forest_regressor": RandomForestRegressor(
+                n_estimators=200,
+                random_state=random_state,
+                n_jobs=-1,
+            ),
+        }
+
+    def _evaluate_model(
+        self,
+        problem_type: str,
+        y_true: pd.Series,
+        y_pred: Any,
+        y_proba: Any = None,
+    ) -> dict[str, float | None]:
+        """Evaluate classification or regression models."""
+
+        if problem_type == "classification":
+            metrics = {
+                "accuracy": round(float(accuracy_score(y_true, y_pred)), 4),
+                "f1": round(float(f1_score(y_true, y_pred, zero_division=0)), 4),
+                "roc_auc": None,
+            }
+
+            if y_proba is not None and y_true.nunique() == 2:
+                metrics["roc_auc"] = round(float(roc_auc_score(y_true, y_proba)), 4)
+
+            return metrics
+
+        mse = mean_squared_error(y_true, y_pred)
+
+        return {
+            "mae": round(float(mean_absolute_error(y_true, y_pred)), 4),
+            "rmse": round(float(mse ** 0.5), 4),
+            "r2": round(float(r2_score(y_true, y_pred)), 4),
+        }
+
+    def _selection_score(
+        self,
+        problem_type: str,
+        metrics: dict[str, float | None],
+    ) -> float:
+        """Return model-selection score where higher is better."""
+
+        if problem_type == "classification":
+            if metrics.get("roc_auc") is not None:
+                return float(metrics["roc_auc"])
+            return float(metrics["f1"] or 0.0)
+
+        return float(metrics["r2"])
+
+    def _safe_model_result_for_llm(self, result: dict[str, Any]) -> dict[str, Any]:
+        """Remove non-serializable fitted model objects before LLM interpretation."""
+
+        return {
+            key: value
+            for key, value in result.items()
+            if key
+            not in {
+                "best_pipeline",
+                "test_predictions",
+                "test_probabilities",
+            }
+        }
+
+    def _drop_unusable_features(self, X: pd.DataFrame) -> pd.DataFrame:
+        """Drop datetime and constant columns before modeling."""
+
+        X = X.copy()
+
+        datetime_cols = list(
+            X.select_dtypes(include=["datetime", "datetimetz"]).columns
+        )
+
+        constant_cols = self.constant_features(X)
+
+        drop_cols = sorted(set(datetime_cols + constant_cols))
+
+        if drop_cols:
+            X = X.drop(columns=drop_cols)
+
+        return X
+
+    def _is_classification_target(self, y: pd.Series) -> bool:
+        """Heuristic classification target detection."""
+
+        unique_values = y.nunique(dropna=True)
+
+        if y.dtype == "object" or str(y.dtype) == "category" or y.dtype == "bool":
+            return True
+
+        if unique_values <= 20 and pd.api.types.is_integer_dtype(y):
+            return True
+
+        return False
 
     # ------------------------------------------------------------------
     # Validation helpers
@@ -291,3 +583,4 @@ DATAFRAME CONTEXT:
 
         if missing:
             raise ValueError(f"Missing columns: {missing}")
+
