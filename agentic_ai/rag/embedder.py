@@ -23,7 +23,7 @@ def embed_texts(texts: list[str], api_key: str | None = None) -> list[list[float
     embeddings = []
     for text in texts:
         result = client.models.embed_content(
-            model="models/text-embedding-004",
+            model="models/gemini-embedding-001",
             contents=text,
         )
         embeddings.append(result.embeddings[0].values)
