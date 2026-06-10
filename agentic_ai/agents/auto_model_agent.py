@@ -34,6 +34,7 @@ class AutoModelAgent(MLEAgent):
         test_size: float = 0.2,
         random_state: int = 42,
         stream: bool = True,
+        interpret: bool = True,
     ) -> dict[str, Any]:
         """Look at data, design policy, train model, and explain results."""
 
@@ -44,6 +45,31 @@ class AutoModelAgent(MLEAgent):
         target = self.target_summary(df, target_col)
         features = self.feature_summary(df, target_col)
         leakage = self.leakage_scan(df, target_col)
+        
+
+        if not interpret:
+            model_result = self.train_model(
+            df=df,
+            target_col=target_col,
+            test_size=test_size,
+            random_state=random_state,
+            drop_columns=drop_columns,
+        )
+
+            return {
+                "objective": objective,
+                "target_column": target_col,
+                "data_profile": profile,
+                "target_summary": target,
+                "feature_summary": features,
+                "leakage_scan": leakage,
+                "modeling_policy": None,
+                "interpretation": None,
+                "model_result": model_result,
+                "best_model": model_result["best_model"],
+                "best_score": model_result["best_score"],
+                "best_pipeline": model_result["best_pipeline"],
+            }
 
         policy_prompt = f"""
 You are about to create a machine learning model.
