@@ -4,6 +4,7 @@ from agentic_ai.agents.json_agent import JsonAgent
 from agentic_ai.agents.reasoning_agent import ReasoningAgent
 from agentic_ai.agents.analyst_agent import AnalystAgent
 from agentic_ai.agents.mle_agent import MLEAgent
+from agentic_ai.agents.auto_model_agent import AutoModelAgent
 
 __all__ = [
     "BaseAgent",
@@ -12,4 +13,5 @@ __all__ = [
     "ReasoningAgent",
     "AnalystAgent",
     "MLEAgent",
+    "AutoModelAgent",
 ]
