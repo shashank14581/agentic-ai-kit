@@ -10,7 +10,7 @@ This project started with a simple question: what happens if two agents talk and
 
 ## Installation
 
-```bash
+
 pip install agentic-ai
 
 For the latest GitHub version:
