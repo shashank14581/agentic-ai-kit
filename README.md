@@ -41,7 +41,7 @@ A progressive Python framework for building agentic AI systems with **Google Gem
 Install from PyPI:
 
 ```bash
-pip install agentic-ai
+pip install agentic-ai-kit
 ```
 
 Install the latest GitHub version:
