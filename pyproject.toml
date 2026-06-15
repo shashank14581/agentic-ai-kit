@@ -3,8 +3,8 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agentic-ai"
-version = "0.1.1"
+name = "agentic-ai-kit"
+version = "0.1.2"
 description = "A progressive framework for building agentic AI systems with Google Gemini."
 readme = "README.md"
 license = { text = "MIT" }
