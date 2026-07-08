@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>agentic-ai-kit Documentation</title>
+  <meta name="description" content="Documentation for agentic-ai-kit, a progressive Python framework for Gemini-based agentic AI systems." />
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #11182d;
+      --panel-soft: #17203a;
+      --text: #eef2ff;
+      --muted: #aab4d4;
+      --accent: #8ab4ff;
+      --accent-2: #b4f8c8;
+      --border: rgba(255, 255, 255, 0.11);
+      --code-bg: #070b16;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --radius: 18px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(138, 180, 255, 0.18), transparent 35%),
+        radial-gradient(circle at top right, rgba(180, 248, 200, 0.12), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .shell {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      background: rgba(11, 16, 32, 0.82);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07101f;
+      font-weight: 900;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    nav a {
+      color: var(--muted);
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      padding: 86px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 34px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--accent-2);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 20px 0 16px;
+      font-size: clamp(42px, 7vw, 82px);
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 760px;
+      font-size: 19px;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-weight: 800;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07101f;
+      border: none;
+    }
+
+    .hero-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.035));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .terminal-title {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    section {
+      padding: 56px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: clamp(30px, 4vw, 46px);
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    h3 {
+      margin: 34px 0 10px;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    h4 {
+      margin: 24px 0 8px;
+      font-size: 18px;
+    }
+
+    .section-lead {
+      margin: 0 0 24px;
+      color: var(--muted);
+      max-width: 850px;
+      font-size: 17px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid.cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 20px;
+    }
+
+    .card h3,
+    .card h4 {
+      margin-top: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(138, 180, 255, 0.11);
+      border: 1px solid rgba(138, 180, 255, 0.22);
+      color: #dbe8ff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    pre {
+      margin: 14px 0 0;
+      overflow: auto;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--code-bg);
+      padding: 16px;
+      color: #d7e3ff;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    code {
+      font-family:
+        "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    :not(pre) > code {
+      padding: 2px 6px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e4ecff;
+      font-size: 0.92em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 0;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--accent-2);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .module {
+      margin-top: 22px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .module-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .module-head h3 {
+      margin: 0;
+    }
+
+    .pill {
+      white-space: nowrap;
+      font-size: 12px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent-2);
+      background: rgba(180, 248, 200, 0.08);
+      padding: 14px 16px;
+      border-radius: 12px;
+      color: #eafff1;
+      margin-top: 14px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 0 46px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 880px) {
+      .hero-grid,
+      .grid.cols-2,
+      .grid.cols-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+
+      .module-head {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="logo">AI</span>
+        <span>agentic-ai-kit</span>
+      </a>
+
+      <nav>
+        <a href="#install">Install</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="#modules">Modules</a>
+        <a href="#constructors">Constructors</a>
+        <a href="#examples">Examples</a>
+        <a href="#pages">GitHub Pages</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="shell">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow">Gemini-based agent framework</span>
+            <h1>Build agents from first principles.</h1>
+            <p class="lead">
+              <strong>agentic-ai-kit</strong> is a progressive Python framework for building
+              conversational agents, tool-using agents, structured-output agents, dataframe agents,
+              long-term memory systems, RAG workflows, MCP-style tools, multi-agent patterns,
+              and SQL AI enrichment over SQLite.
+            </p>
+
+            <div class="hero-actions">
+              <a class="button primary" href="#quickstart">Start building</a>
+              <a class="button" href="https://pypi.org/project/agentic-ai-kit/" target="_blank" rel="noreferrer">PyPI</a>
+              <a class="button" href="https://github.com/shashank14581/agentic-ai-kit" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
+
+            <div class="tag-row">
+              <span class="tag">BaseAgent</span>
+              <span class="tag">ToolAgent</span>
+              <span class="tag">SQL AI</span>
+              <span class="tag">LongTermMemory</span>
+              <span class="tag">RAG</span>
+              <span class="tag">MCP</span>
+            </div>
+          </div>
+
+          <div class="hero-card">
+            <div class="terminal-title">Install and run</div>
+            <pre><code>pip install agentic-ai-kit
+
+export GEMINI_API_KEY="your-key-here"
+
+python - &lt;&lt;'PY'
+from agentic_ai.agents import BaseAgent
+
+agent = BaseAgent(
+    name="Sage",
+    sys_prompt="You are concise and useful.",
+    extract_memory=False,
+)
+
+print(agent.think(
+    "Explain agentic AI in simple terms.",
+    stream=False,
+))
+PY</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="install">
+        <h2>Installation</h2>
+        <p class="section-lead">
+          Install from PyPI, set a Gemini API key, and import from the Python package
+          namespace <code>agentic_ai</code>.
+        </p>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>PyPI</h3>
+            <pre><code>pip install agentic-ai-kit</code></pre>
+          </div>
+
+          <div class="card">
+            <h3>Latest GitHub version</h3>
+            <pre><code>pip install --upgrade --force-reinstall \
+  git+https://github.com/shashank14581/agentic-ai-kit.git</code></pre>
+          </div>
+        </div>
+
+        <h3>Set Gemini API key</h3>
+        <pre><code>export GEMINI_API_KEY="your-key-here"</code></pre>
+
+        <h3>Google Colab</h3>
+        <pre><code>import os
+from google.colab import userdata
+
+gemini_key = userdata.get("GEMINI_API_KEY")
+
+if not gemini_key:
+    raise EnvironmentError("Add GEMINI_API_KEY in Colab Secrets first.")
+
+os.environ["GEMINI_API_KEY"] = gemini_key</code></pre>
+      </section>
+
+      <section id="quickstart">
+        <h2>Quickstart</h2>
+        <p class="section-lead">
+          The simplest agent is a <code>BaseAgent</code>. It wraps a Gemini model with a name,
+          system prompt, optional memory behavior, and a <code>think()</code> method.
+        </p>
+
+        <pre><code>import os
+
+from agentic_ai.agents import BaseAgent
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
+
+agent = BaseAgent(
+    name="Alfred",
+    sys_prompt="You are a witty British butler.",
+    model="gemini-2.5-flash-lite",
+    extract_memory=False,
+)
+
+response = agent.think(
+    "Good morning. What should I focus on today?",
+    stream=False,
+)
+
+print(response)</code></pre>
+      </section>
+
+      <section id="modules">
+        <h2>Modules</h2>
+        <p class="section-lead">
+          The kit is organized around composable agent primitives instead of one heavy abstraction.
+        </p>
+
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>Agents</h3>
+            <p class="muted">Conversational, tool-using, JSON, reasoning, analyst, MLE, and AutoModel agents.</p>
+          </div>
+
+          <div class="card">
+            <h3>Memory</h3>
+            <p class="muted">Short-term conversation state, durable facts, shared memory, and SQLite-backed long-term memory.</p>
+          </div>
+
+          <div class="card">
+            <h3>SQL AI</h3>
+            <p class="muted">Use Gemini pseudo-functions inside SQLite-style queries to enrich rows with summaries, labels, and keywords.</p>
+          </div>
+
+          <div class="card">
+            <h3>RAG</h3>
+            <p class="muted">Chunk text, embed it, store vectors, retrieve context, and answer with retrieved material.</p>
+          </div>
+
+          <div class="card">
+            <h3>Tools</h3>
+            <p class="muted">Register Python functions and expose them to Gemini function calling.</p>
+          </div>
+
+          <div class="card">
+            <h3>MCP</h3>
+            <p class="muted">Minimal MCP-style local server/client pattern for exposing tools over HTTP.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="constructors">
+        <h2>Constructors and API reference</h2>
+        <p class="section-lead">
+          This section documents the main public classes and functions.
+        </p>
+
+        <div class="module" id="baseagent">
+          <div class="module-head">
+            <div>
+              <h3>BaseAgent</h3>
+              <p class="muted">The foundation for all agents.</p>
+            </div>
+            <span class="pill">agentic_ai.agents</span>
+          </div>
+
+          <pre><code>from agentic_ai.agents import BaseAgent
+
+BaseAgent(
+    name: str,
+    sys_prompt: str,
+    model: str = "gemini-2.5-flash-lite",
+    api_key: str | None = None,
+    memory_window: int = 3,
+    max_turns: int | None = None,
+    max_facts: int = 50,
+    extract_memory: bool = True,
+    thinking_budget: int = 0,
+)</code></pre>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>name</code></td><td>Display name of the agent.</td></tr>
+              <tr><td><code>sys_prompt</code></td><td>System prompt/persona used by Gemini.</td></tr>
+              <tr><td><code>model</code></td><td>Gemini model name.</td></tr>
+              <tr><td><code>api_key</code></td><td>Optional Gemini API key. If omitted, reads <code>GEMINI_API_KEY</code>.</td></tr>
+              <tr><td><code>memory_window</code></td><td>Number of recent turns included in memory context.</td></tr>
+              <tr><td><code>max_turns</code></td><td>Optional maximum number of retained conversation turns.</td></tr>
+              <tr><td><code>max_facts</code></td><td>Maximum durable facts retained in the in-agent fact store.</td></tr>
+              <tr><td><code>extract_memory</code></td><td>Whether to extract durable facts from user messages.</td></tr>
+              <tr><td><code>thinking_budget</code></td><td>Gemini thinking budget where supported.</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Runnable example</h4>
+          <pre><code>from agentic_ai.agents import BaseAgent
+
+agent = BaseAgent(
+    name="Sage",
+    sys_prompt="You are concise, clear, and practical.",
+    model="gemini-2.5-flash-lite",
+    extract_memory=False,
+)
+
+response = agent.think(
+    "Explain Python classes with one example.",
+    stream=False,
+)
+
+print(response)</code></pre>
+        </div>
+
+        <div class="module" id="toolagent">
+          <div class="module-head">
+            <div>
+              <h3>ToolAgent</h3>
+              <p class="muted">An agent that can call registered Python functions.</p>
+            </div>
+            <span class="pill">agentic_ai.agents</span>
+          </div>
+
+          <pre><code>from agentic_ai.agents import ToolAgent
+
+ToolAgent(
+    name: str,
+    sys_prompt: str,
+    model: str = "gemini-2.5-flash",
+    api_key: str | None = None,
+)</code></pre>
+
+          <h4>Register a tool</h4>
+          <pre><code>agent.register_tool(
+    fn,
+    description: str | None = None,
+    params: dict | None = None,
+    required: list[str] | None = None,
+)</code></pre>
+
+          <h4>Runnable example</h4>
+          <pre><code>from agentic_ai.agents import ToolAgent
+
+
+def calculate_rectangle_area(length: float, width: float) -> float:
+    return length * width
+
+
+agent = ToolAgent(
+    name="Calculator",
+    sys_prompt="Use tools whenever exact calculation is required.",
+)
+
+agent.register_tool(calculate_rectangle_area)
+
+response = agent.think(
+    "What is the area of a rectangle that is 12.5 metres long and 8 metres wide?"
+)
+
+print(response)</code></pre>
+        </div>
+
+        <div class="module" id="jsonagent">
+          <div class="module-head">
+            <div>
+              <h3>JsonAgent</h3>
+              <p class="muted">An agent that returns a parsed Python dictionary.</p>
+            </div>
+            <span class="pill">agentic_ai.agents</span>
+          </div>
+
+          <pre><code>from agentic_ai.agents import JsonAgent
+
+JsonAgent(
+    name: str,
+    sys_prompt: str,
+    schema: dict | None = None,
+    model: str = "gemini-2.5-flash-lite",
+    api_key: str | None = None,
+)</code></pre>
+
+          <h4>Runnable example</h4>
+          <pre><code>from agentic_ai.agents import JsonAgent
+
+agent = JsonAgent(
+    name="Extractor",
+    sys_prompt="Extract structured data from text.",
+    schema={
+        "name": "string",
+        "role": "string",
+    },
+)
+
+result = agent.think(
+    "Shashank is building an AI framework.",
+    stream=False,
+)
+
+print(result)
+print(result["name"])</code></pre>
+        </div>
+
+        <div class="module" id="reasoningagent">
+          <div class="module-head">
+            <div>
+              <h3>ReasoningAgent</h3>
+              <p class="muted">Returns a structured output with intermediate reasoning text and final answer.</p>
+            </div>
+            <span class="pill">agentic_ai.agents</span>
+          </div>
+
+          <pre><code>from agentic_ai.agents import ReasoningAgent
+
+ReasoningAgent(
+    name: str,
+    sys_prompt: str,
+    show_reasoning: bool = True,
+    model: str = "gemini-2.5-flash-lite",
+    api_key: str | None = None,
+)</code></pre>
+
+          <h4>Runnable example</h4>
+          <pre><code>from agentic_ai.agents import ReasoningAgent
+
+planner = ReasoningAgent(
+    name="Planner",
+    sys_prompt="Break work into clear steps.",
+    show_reasoning=False,
+)
+
+result = planner.think(
+    "Create a 3-step learning plan for PyTorch.",
+    stream=False,
+)
+
+print(result.answer)
+print(result.context_for_next)</code></pre>
+        </div>
+
+        <div class="module" id="analystagent">
+          <div class="module-head">
+            <div>
+              <h3>AnalystAgent</h3>
+              <p class="muted">DataFrame-aware analytics specialist.</p>
+            </div>
+            <span class="pill">agentic_ai.agents</span>
+          </div>
+
+          <pre><code>from agentic_ai.agents import AnalystAgent
+
+AnalystAgent(
+    name: str = "Analyst",
+    domain_context: str | None = None,
+    model: str = "gemini-2.5-flash-lite",
+    api_key: str | None = None,
+    memory_window: int = 3,
+    max_turns: int | None = None,
+    thinking_budget: int = 0,
+)</code></pre>
+
+          <h4>Main methods</h4>
+          <table>
+            <thead>
+              <tr><th>Method</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>profile_dataframe(df)</code></td><td>Rows, columns, dtypes, missing values, duplicates.</td></tr>
+              <tr><td><code>numeric_summary(df)</code></td><td>Numeric describe summary.</td></tr>
+              <tr><td><code>categorical_summary(df, top_n=10)</code></td><td>Top category counts.</td></tr>
+              <tr><td><code>groupby_summary(df, group_col, metric_col, agg="mean")</code></td><td>Grouped metric summary.</td></tr>
+              <tr><td><code>correlation_summary(df)</code></td><td>Numeric correlation matrix.</td></tr>
+              <tr><td><code>analyze_dataframe(df, question, stream=True)</code></td><td>Creates dataframe context and asks the agent to analyze it.</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Runnable example</h4>
+          <pre><code>import pandas as pd
+from agentic_ai.agents import AnalystAgent
+
+df = pd.DataFrame({
+    "segment": ["A", "A", "B", "B"],
+    "sales": [100, 140, 80, 120],
+})
+
+agent = AnalystAgent(
+    domain_context="Simple sales analysis.",
+)
+
+print(agent.profile_dataframe(df))
+print(agent.groupby_summary(df, "segment", "sales", agg="mean"))
+
+answer = agent.analyze_dataframe(
+    df,
+    "Which segment has higher average sales?",
+    stream=False,
+)
+
+print(answer)</code></pre>
+        </div>
+
+        <div class="module" id="mleagent">
+          <div class="module-head">
+            <div>
+              <h3>MLEAgent</h3>
+              <p class="muted">Machine-learning engineering specialist for pandas DataFrames.</p>
+            </div>
+            <span class="pill">agentic_ai.agents</span>
+          </div>
+
+          <pre><code>from agentic_ai.agents import MLEAgent
+
+MLEAgent(
+    name: str = "MLE",
+    project_context: str | None = None,
+    model: str = "gemini-2.5-flash-lite",
+    api_key: str | None = None,
+    memory_window: int = 3,
+    max_turns: int | None = None,
+    thinking_budget: int = 0,
+)</code></pre>
+
+          <h4>Main methods</h4>
+          <table>
+            <thead>
+              <tr><th>Method</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>profile_dataframe(df)</code></td><td>Data quality and schema profile.</td></tr>
+              <tr><td><code>target_summary(df, target_col)</code></td><td>Target type, missingness, distribution.</td></tr>
+              <tr><td><code>feature_summary(df, target_col=None)</code></td><td>Candidate feature summary.</td></tr>
+              <tr><td><code>leakage_scan(df, target_col)</code></td><td>Heuristic leakage-prone column scan.</td></tr>
+              <tr><td><code>train_model(df, target_col, ...)</code></td><td>Train baseline ML models and return the best pipeline.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="module" id="automodelagent">
+          <div class="module-head">
+            <div>
+              <h3>AutoModelAgent</h3>
+              <p class="muted">End-to-end dataframe-to-model agent built on top of MLEAgent.</p>
+            </div>
+            <span class="pill">agentic_ai.agents</span>
+          </div>
+
+          <div class="callout">
+            <strong>Constructor:</strong> <code>AutoModelAgent</code> inherits the constructor from <code>MLEAgent</code>.
+          </div>
+
+          <h4>Run method</h4>
+          <pre><code>AutoModelAgent.run(
+    df,
+    target_col: str,
+    objective: str,
+    drop_columns: list[str] | None = None,
+    test_size: float = 0.2,
+    random_state: int = 42,
+    stream: bool = True,
+    interpret: bool = True,
+)</code></pre>
+
+          <h4>Example</h4>
+          <pre><code>from agentic_ai.agents import AutoModelAgent
+
+agent = AutoModelAgent(
+    project_context="Baseline tabular modelling.",
+)
+
+result = agent.run(
+    df=df,
+    target_col="target",
+    objective="Create a baseline model for classification.",
+    interpret=False,
+)
+
+print(result["best_model"])
+print(result["best_score"])</code></pre>
+        </div>
+
+        <div class="module" id="memory">
+          <div class="module-head">
+            <div>
+              <h3>LongTermMemory</h3>
+              <p class="muted">SQLite-backed persistent memory.</p>
+            </div>
+            <span class="pill">agentic_ai.memory</span>
+          </div>
+
+          <pre><code>from agentic_ai.memory.long_term import LongTermMemory
+
+LongTermMemory(
+    db_path: str | Path = "long_term_memory.db",
+)</code></pre>
+
+          <h4>Methods</h4>
+          <table>
+            <thead>
+              <tr><th>Method</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>log(content, agent="unknown")</code></td><td>Append a memory entry and return its row id.</td></tr>
+              <tr><td><code>search(keyword, agent=None, limit=20)</code></td><td>Search memory content using SQL LIKE.</td></tr>
+              <tr><td><code>recent(n=10, agent=None)</code></td><td>Return recent memory entries.</td></tr>
+              <tr><td><code>clear(agent=None)</code></td><td>Delete memory entries.</td></tr>
+              <tr><td><code>close()</code></td><td>Close the SQLite connection.</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Runnable example</h4>
+          <pre><code>from agentic_ai.memory.long_term import LongTermMemory
+
+memory = LongTermMemory("agent_memory.db")
+
+memory.log(
+    "User is building agentic-ai-kit.",
+    agent="project",
+)
+
+memory.log(
+    "SQL AI enriches SQLite rows with Gemini-generated columns.",
+    agent="project",
+)
+
+results = memory.search("SQL AI", agent="project")
+
+for row in results:
+    print(row)
+
+memory.close()</code></pre>
+        </div>
+
+        <div class="module" id="sql-ai">
+          <div class="module-head">
+            <div>
+              <h3>SQL AI</h3>
+              <p class="muted">Gemini-generated columns inside local SQLite-style queries.</p>
+            </div>
+            <span class="pill">agentic_ai.sql_ai</span>
+          </div>
+
+          <pre><code>from agentic_ai.sql_ai import run_ai_sql, parse_ai_sql
+
+run_ai_sql(
+    sql: str,
+    conn,
+    api_key: str | None = None,
+    batch_size: int = 15,
+    workers: int = 4,
+    default_model: str = "gemini-2.5-flash",
+    temperature: float = 0.3,
+    top_p: float = 0.95,
+    max_output_tokens: int = 8192,
+    write_if_create: bool = True,
+)</code></pre>
+
+          <h4>Supported pseudo-functions</h4>
+          <pre><code>ai_generate(prompt='...', model='...') AS generated_text
+
+ai_summarize(model='...') AS summary
+
+ai_classify(labels='A | B | C', model='...') AS label
+
+ai_extract(prompt='Extract retrieval keywords', count=5, model='...') AS keywords</code></pre>
+
+          <h4>Runnable example</h4>
+          <pre><code>import os
+import sqlite3
+import pandas as pd
+
+from agentic_ai.sql_ai import run_ai_sql
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
+
+conn = sqlite3.connect(":memory:")
+
+records = pd.DataFrame({
+    "record_id": [1, 2, 3],
+    "topic": ["Access", "Documentation", "Automation"],
+    "notes": [
+        "User cannot access account after changing password.",
+        "Setup instructions are unclear and need examples.",
+        "Incoming messages should be classified automatically.",
+    ],
+})
+
+records.to_sql("records", conn, if_exists="replace", index=False)
+
+sql = """
+SELECT
+    record_id,
+    topic,
+    notes,
+    ai_generate(
+        prompt='Write a short retrieval-friendly summary for this row',
+        model='gemini-2.5-flash'
+    ) AS retrieval_summary
+FROM records
+"""
+
+result = run_ai_sql(
+    sql=sql,
+    conn=conn,
+    batch_size=2,
+    workers=2,
+)
+
+print(result)</code></pre>
+
+          <h4>Write result back to SQLite</h4>
+          <pre><code>sql = """
+CREATE OR REPLACE TABLE enriched_records AS
+SELECT
+    record_id,
+    notes,
+    ai_summarize(model='gemini-2.5-flash') AS summary,
+    ai_extract(
+        prompt='Extract retrieval keywords from this row',
+        count=5,
+        model='gemini-2.5-flash'
+    ) AS retrieval_keywords
+FROM records
+"""
+
+result = run_ai_sql(sql=sql, conn=conn)
+
+saved = pd.read_sql_query("SELECT * FROM enriched_records", conn)
+
+print(saved)</code></pre>
+        </div>
+
+        <div class="module" id="rag">
+          <div class="module-head">
+            <div>
+              <h3>RAGAgent</h3>
+              <p class="muted">Retrieves relevant chunks from a vector store before answering.</p>
+            </div>
+            <span class="pill">agentic_ai.rag</span>
+          </div>
+
+          <pre><code>from agentic_ai.rag.rag_agent import RAGAgent
+
+RAGAgent(
+    name: str,
+    sys_prompt: str,
+    top_k: int = 3,
+    **kwargs,
+)</code></pre>
+
+          <h4>Methods</h4>
+          <table>
+            <thead>
+              <tr><th>Method</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>ingest(text, chunk_size=500, overlap=50)</code></td><td>Chunk and embed text into the vector store.</td></tr>
+              <tr><td><code>think(input_text, use_memory=True, stream=True)</code></td><td>Retrieve context and answer using the base agent.</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Example</h4>
+          <pre><code>from agentic_ai.rag.rag_agent import RAGAgent
+
+agent = RAGAgent(
+    name="DocsBot",
+    sys_prompt="Answer only using retrieved context.",
+    top_k=3,
+)
+
+agent.ingest("""
+agentic-ai-kit supports BaseAgent, ToolAgent, LongTermMemory,
+SQL AI, RAG, MCP, and multi-agent patterns.
+""")
+
+response = agent.think(
+    "What modules does agentic-ai-kit support?",
+    stream=False,
+)
+
+print(response)</code></pre>
+        </div>
+
+        <div class="module" id="tools">
+          <div class="module-head">
+            <div>
+              <h3>Tool registry</h3>
+              <p class="muted">Register function metadata for agent-callable tools.</p>
+            </div>
+            <span class="pill">agentic_ai.tools</span>
+          </div>
+
+          <pre><code>from agentic_ai.tools.registry import ToolRegistry, tool
+
+ToolRegistry()
+
+registry.register(
+    fn,
+    description: str | None = None,
+    params: dict[str, str] | None = None,
+    required: list[str] | None = None,
+)</code></pre>
+
+          <h4>Decorator example</h4>
+          <pre><code>from agentic_ai.tools.registry import tool
+
+@tool(
+    description="Multiply two numbers",
+    params={"a": "NUMBER", "b": "NUMBER"},
+)
+def multiply(a: float, b: float) -> float:
+    return a * b</code></pre>
+        </div>
+
+        <div class="module" id="patterns">
+          <div class="module-head">
+            <div>
+              <h3>Multi-agent patterns</h3>
+              <p class="muted">Simple orchestration helpers for multiple agents.</p>
+            </div>
+            <span class="pill">agentic_ai.patterns</span>
+          </div>
+
+          <h4>Available functions</h4>
+          <pre><code>run_conversation(
+    agents: list[BaseAgent],
+    opening_message: str,
+    turns: int = 5,
+    verbose: bool = True,
+) -&gt; list[str]
+
+run_supervisor(
+    supervisor: BaseAgent,
+    workers: dict[str, BaseAgent],
+    task: str,
+    verbose: bool = True,
+) -&gt; dict[str, str]
+
+run_parallel(
+    agents: list[BaseAgent],
+    task: str,
+    timeout: float = 60.0,
+) -&gt; dict[str, str]
+
+run_debate(
+    agent_a: BaseAgent,
+    agent_b: BaseAgent,
+    judge: BaseAgent,
+    topic: str,
+    rounds: int = 2,
+) -&gt; dict</code></pre>
+
+          <h4>Parallel example</h4>
+          <pre><code>from agentic_ai.agents import BaseAgent
+from agentic_ai.patterns.parallel import run_parallel
+
+agent_a = BaseAgent("A", "You are practical.", extract_memory=False)
+agent_b = BaseAgent("B", "You are skeptical.", extract_memory=False)
+
+results = run_parallel(
+    agents=[agent_a, agent_b],
+    task="Review this product idea in 3 bullets.",
+)
+
+print(results)</code></pre>
+        </div>
+
+        <div class="module" id="mcp">
+          <div class="module-head">
+            <div>
+              <h3>MCP-style tools</h3>
+              <p class="muted">Minimal local HTTP tool server and client.</p>
+            </div>
+            <span class="pill">agentic_ai.mcp</span>
+          </div>
+
+          <pre><code>from agentic_ai.mcp.server import MCPServer
+from agentic_ai.mcp.client import MCPClient
+
+MCPServer(
+    host: str = "localhost",
+    port: int = 8765,
+)
+
+MCPClient(
+    base_url: str = "http://localhost:8765",
+)</code></pre>
+
+          <h4>Server example</h4>
+          <pre><code>from agentic_ai.mcp.server import MCPServer
+
+server = MCPServer(port=8765)
+
+@server.tool
+def echo(message: str) -&gt; str:
+    return message
+
+server.run()</code></pre>
+
+          <h4>Client example</h4>
+          <pre><code>from agentic_ai.mcp.client import MCPClient
+
+client = MCPClient("http://localhost:8765")
+
+print(client.list_tools())
+print(client.call("echo", message="hello"))</code></pre>
+        </div>
+      </section>
+
+      <section id="examples">
+        <h2>More examples</h2>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>Google Colab SQL AI demo</h3>
+            <pre><code>!pip install -q agentic-ai-kit==0.1.4
+
+import os
+from google.colab import userdata
+
+os.environ["GEMINI_API_KEY"] = userdata.get("GEMINI_API_KEY")</code></pre>
+          </div>
+
+          <div class="card">
+            <h3>Verify package import</h3>
+            <pre><code>from agentic_ai.agents import BaseAgent, ToolAgent
+from agentic_ai.memory.long_term import LongTermMemory
+from agentic_ai.sql_ai import run_ai_sql, parse_ai_sql
+
+print("agentic-ai-kit is ready")</code></pre>
+          </div>
+        </div>
+
+        <h3>Memory + SQL AI direction</h3>
+        <p class="section-lead">
+          A retrieval-focused agent can combine long-term persisted memory with SQL AI relevance enrichment.
+        </p>
+
+        <pre><code>LongTermMemory
+    ↓
+candidate memory rows
+    ↓
+SQL AI relevance classification
+    ↓
+retrieval reasons
+    ↓
+final agent answer</code></pre>
+      </section>
+
+      <section id="pages">
+        <h2>Publish this as GitHub Pages</h2>
+        <p class="section-lead">
+          Commit this root-level <code>index.html</code>, push it, then enable GitHub Pages from the repository settings.
+        </p>
+
+        <pre><code>git add index.html
+git commit -m "Add single-page documentation site"
+git push origin main</code></pre>
+
+        <h3>GitHub Pages settings</h3>
+        <table>
+          <tbody>
+            <tr>
+              <td>Repository</td>
+              <td><code>shashank14581/agentic-ai-kit</code></td>
+            </tr>
+            <tr>
+              <td>Pages source</td>
+              <td>Deploy from branch</td>
+            </tr>
+            <tr>
+              <td>Branch</td>
+              <td><code>main</code></td>
+            </tr>
+            <tr>
+              <td>Folder</td>
+              <td><code>/root</code></td>
+            </tr>
+            <tr>
+              <td>Expected URL</td>
+              <td><code>https://shashank14581.github.io/agentic-ai-kit/</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="shell">
+      <strong>agentic-ai-kit</strong>
+      <p>
+        A progressive Python framework for building Gemini-based agentic AI systems.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
