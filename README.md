@@ -29,6 +29,7 @@ A progressive Python framework for building agentic AI systems with **Google Gem
   - [Long-Term Memory](#long-term-memory)
   - [Shared Memory](#shared-memory)
 - [Tools](#tools)
+- [SQL AI](#sql-ai)
 - [Multi-Agent Patterns](#multi-agent-patterns)
 - [MCP](#mcp-model-context-protocol)
 - [Examples](#examples)
@@ -121,6 +122,9 @@ agentic_ai/
 ├── mcp/
 │   ├── server.py
 │   └── client.py
+├── sql_ai/
+│   ├── __init__.py
+│   └── runner.py
 └── examples/
 ```
 
@@ -1067,6 +1071,111 @@ print(
 Functions should have clear names, type hints, and concise docstrings because Gemini uses this information to decide when and how to call them.
 
 ---
+---
+
+---
+
+## SQL AI
+
+`SQL AI` lets you enrich local SQLite query results with Gemini-generated columns.
+
+It is useful when you have structured data in SQLite and want to create summaries, labels, classifications, keywords, or retrieval-friendly text fields directly from SQL-style queries.
+
+### Runnable Example
+
+```python
+import os
+import sqlite3
+
+import pandas as pd
+
+from agentic_ai.sql_ai import run_ai_sql
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
+
+conn = sqlite3.connect(":memory:")
+
+records = pd.DataFrame(
+    {
+        "record_id": [1, 2, 3],
+        "topic": ["Access", "Documentation", "Automation"],
+        "priority": ["High", "Medium", "Low"],
+        "notes": [
+            "User cannot access their account after changing password.",
+            "Setup instructions are unclear and need examples.",
+            "Incoming messages should be classified automatically.",
+        ],
+    }
+)
+
+records.to_sql("records", conn, if_exists="replace", index=False)
+
+sql = """
+SELECT
+    record_id,
+    topic,
+    priority,
+    notes,
+    ai_generate(
+        prompt='Write a short retrieval-friendly summary for this row',
+        model='gemini-2.5-flash'
+    ) AS retrieval_summary
+FROM records
+"""
+
+result = run_ai_sql(
+    sql=sql,
+    conn=conn,
+)
+
+print(result)
+```
+
+### Supported SQL AI Pseudo-Functions
+
+```sql
+ai_generate(prompt='...', model='...') AS generated_text
+
+ai_summarize(model='...') AS summary
+
+ai_classify(labels='A | B | C', model='...') AS label
+
+ai_extract(prompt='Extract retrieval keywords', count=5, model='...') AS keywords
+```
+
+### Write Results Back to SQLite
+
+`SQL AI` also supports a notebook-friendly `CREATE OR REPLACE TABLE` pattern. SQLite does not support this syntax natively, but `run_ai_sql()` handles it by writing the final dataframe back to SQLite.
+
+```python
+sql = """
+CREATE OR REPLACE TABLE enriched_records AS
+SELECT
+    record_id,
+    notes,
+    ai_summarize(
+        model='gemini-2.5-flash'
+    ) AS summary,
+    ai_extract(
+        prompt='Extract retrieval keywords from this row',
+        count=5,
+        model='gemini-2.5-flash'
+    ) AS retrieval_keywords
+FROM records
+"""
+
+result = run_ai_sql(
+    sql=sql,
+    conn=conn,
+)
+
+saved = pd.read_sql_query("SELECT * FROM enriched_records", conn)
+
+print(saved)
+```
 
 ## Multi-Agent Patterns
 
