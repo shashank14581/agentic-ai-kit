@@ -1,517 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>agentic-ai-kit Documentation</title>
-  <meta name="description" content="Documentation for agentic-ai-kit, a progressive Python framework for Gemini-based agentic AI systems." />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>agentic-ai-kit — Documentation</title>
+<meta name="description" content="Reference documentation for agentic-ai-kit: a progressive Python framework for building agentic AI systems with Google Gemini." />
 
-  <style>
-    :root {
-      --bg: #0b1020;
-      --panel: #11182d;
-      --panel-soft: #17203a;
-      --text: #eef2ff;
-      --muted: #aab4d4;
-      --accent: #8ab4ff;
-      --accent-2: #b4f8c8;
-      --border: rgba(255, 255, 255, 0.11);
-      --code-bg: #070b16;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-      --radius: 18px;
-      --max: 1180px;
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+  :root{
+    --bg:#0b1214;
+    --bg-2:#0e171a;
+    --panel:#111c20;
+    --panel-2:#152227;
+    --line:rgba(154,196,199,0.14);
+    --line-strong:rgba(154,196,199,0.28);
+    --text:#e7f0ef;
+    --muted:#8fa8ab;
+    --muted-2:#6c8386;
+    --amber:#e8a33d;
+    --amber-soft:rgba(232,163,61,0.14);
+    --cyan:#5fd0c9;
+    --cyan-soft:rgba(95,208,201,0.12);
+    --code-bg:#0a1113;
+    --radius:10px;
+    --side-w:272px;
+    --maxw:1180px;
+  }
 
-    html {
-      scroll-behavior: smooth;
-    }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
 
-    body {
-      margin: 0;
-      font-family:
-        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(138, 180, 255, 0.18), transparent 35%),
-        radial-gradient(circle at top right, rgba(180, 248, 200, 0.12), transparent 32%),
-        var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(232,163,61,0.08), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(95,208,201,0.07), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height:1.65;
+    font-size:16px;
+  }
 
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
+  h1,h2,h3,h4{
+    font-family:"Space Grotesk", ui-sans-serif, sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:var(--text);
+  }
 
-    a:hover {
-      text-decoration: underline;
-    }
+  code, pre, .mono, .kbd{
+    font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+  }
 
-    .shell {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+  a{ color:var(--cyan); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
 
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(16px);
-      background: rgba(11, 16, 32, 0.82);
-      border-bottom: 1px solid var(--border);
-    }
+  ::selection{ background:rgba(232,163,61,0.35); }
 
-    .topbar-inner {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
+  /* ---------------- topbar ---------------- */
+  .topbar{
+    position:sticky; top:0; z-index:60;
+    background:rgba(11,18,20,0.86);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:calc(var(--maxw) + var(--side-w) + 48px);
+    margin:0 auto;
+    padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.02rem;}
+  .brand .chip{
+    width:30px; height:30px; border-radius:8px;
+    display:grid; place-items:center;
+    background:linear-gradient(135deg, var(--amber), #b97a1f);
+    color:#0b1214; font-weight:800; font-family:"Space Grotesk", sans-serif;
+    box-shadow:0 0 0 1px rgba(0,0,0,0.25) inset;
+  }
+  .brand .sub{ color:var(--muted); font-weight:400; font-size:0.82rem; }
+  .top-links{ display:flex; align-items:center; gap:18px; font-size:0.88rem; }
+  .top-links a{ color:var(--muted); }
+  .top-links a:hover{ color:var(--text); }
+  .gh-btn{
+    display:flex; align-items:center; gap:8px;
+    padding:7px 13px; border:1px solid var(--line-strong); border-radius:8px;
+    color:var(--text) !important; font-size:0.85rem;
+  }
+  .gh-btn:hover{ border-color:var(--amber); text-decoration:none; background:var(--amber-soft); }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--text);
-    }
+  /* ---------------- hero ---------------- */
+  .hero{
+    max-width:calc(var(--maxw) + var(--side-w) + 48px);
+    margin:0 auto;
+    padding:64px 24px 40px;
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:40px;
+    align-items:center;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:0.76rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--amber); font-weight:600; margin-bottom:18px;
+  }
+  .eyebrow::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--amber); box-shadow:0 0 10px var(--amber);}
+  .hero h1{ font-size:2.7rem; line-height:1.08; margin:0 0 18px; }
+  .hero h1 em{ font-style:normal; color:var(--amber); }
+  .hero p.lede{ color:var(--muted); font-size:1.08rem; max-width:52ch; margin:0 0 26px; }
+  .hero-ctas{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:22px;}
+  .btn{
+    padding:11px 20px; border-radius:8px; font-weight:600; font-size:0.92rem;
+    display:inline-flex; align-items:center; gap:8px; border:1px solid transparent; cursor:pointer;
+  }
+  .btn-primary{ background:var(--amber); color:#0b1214; }
+  .btn-primary:hover{ background:#f3b559; text-decoration:none; }
+  .btn-ghost{ border-color:var(--line-strong); color:var(--text) !important; }
+  .btn-ghost:hover{ border-color:var(--cyan); background:var(--cyan-soft); text-decoration:none; }
+  .hero-meta{ display:flex; gap:22px; flex-wrap:wrap; font-size:0.82rem; color:var(--muted-2); }
+  .hero-meta span b{ color:var(--text); font-family:"IBM Plex Mono", monospace; }
 
-    .logo {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #07101f;
-      font-weight: 900;
-    }
+  /* schematic diagram */
+  .diagram-wrap{
+    background:
+      linear-gradient(var(--panel), var(--panel)) padding-box,
+      repeating-linear-gradient(0deg, rgba(154,196,199,0.05) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(90deg, rgba(154,196,199,0.05) 0 1px, transparent 1px 26px);
+    border:1px solid var(--line); border-radius:14px; padding:14px;
+  }
+  .diagram-wrap svg{ width:100%; height:auto; display:block; }
 
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 12px;
-      font-size: 14px;
-    }
+  /* ---------------- layout: sidebar + content ---------------- */
+  .layout{
+    max-width:calc(var(--maxw) + var(--side-w) + 48px);
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:var(--side-w) minmax(0,1fr);
+    gap:0;
+  }
+  .sidebar{
+    position:sticky; top:57px;
+    align-self:start;
+    height:calc(100vh - 57px);
+    overflow-y:auto;
+    padding:32px 20px 40px 24px;
+    border-right:1px solid var(--line);
+  }
+  .sidebar::-webkit-scrollbar{ width:6px; }
+  .sidebar::-webkit-scrollbar-thumb{ background:var(--line-strong); border-radius:6px; }
+  .side-group{ margin-bottom:22px; }
+  .side-title{
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em;
+    color:var(--muted-2); font-weight:600; margin-bottom:8px; padding-left:10px;
+  }
+  .side-group a{
+    display:block; padding:6px 10px; font-size:0.87rem; color:var(--muted);
+    border-left:2px solid transparent; border-radius:0 6px 6px 0;
+  }
+  .side-group a:hover{ color:var(--text); text-decoration:none; background:var(--panel-2); }
+  .side-group a.active{ color:var(--amber); border-left-color:var(--amber); background:var(--amber-soft); }
 
-    nav a {
-      color: var(--muted);
-    }
+  .content{ padding:48px 32px 100px; min-width:0; }
 
-    nav a:hover {
-      color: var(--text);
-    }
+  section.doc{ padding-top:26px; margin-top:-6px; scroll-margin-top:76px; }
+  section.doc + section.doc{ border-top:1px solid var(--line); margin-top:44px; padding-top:44px; }
 
-    .hero {
-      padding: 86px 0 56px;
-    }
+  .section-tag{
+    font-family:"IBM Plex Mono", monospace; font-size:0.76rem; color:var(--muted-2);
+    margin-bottom:6px;
+  }
+  h2.h-main{ font-size:1.9rem; margin:0 0 10px; }
+  h3.h-sub{ font-size:1.32rem; margin:34px 0 6px; padding-top:6px; }
+  h3.h-sub .file-badge{
+    display:inline-block; margin-left:10px; font-family:"IBM Plex Mono", monospace;
+    font-size:0.7rem; color:var(--cyan); background:var(--cyan-soft);
+    padding:3px 8px; border-radius:6px; font-weight:400; vertical-align:middle;
+  }
+  h4.h-mini{ font-size:1.02rem; margin:22px 0 8px; color:var(--text); }
+  p{ color:var(--text); }
+  .lead{ color:var(--muted); margin-top:0; }
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-      gap: 34px;
-      align-items: center;
-    }
+  /* code blocks */
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    overflow-x:auto;
+    font-size:0.84rem;
+    margin:14px 0;
+  }
+  pre code.hljs{ background:transparent; padding:0; }
+  code:not(.hljs){
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:1px 6px;
+    font-size:0.86em;
+    color:var(--cyan);
+  }
+  .code-label{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--panel-2); border:1px solid var(--line); border-bottom:none;
+    border-radius:10px 10px 0 0; padding:8px 14px; font-size:0.74rem;
+    color:var(--muted-2); text-transform:uppercase; letter-spacing:0.08em;
+    font-family:"IBM Plex Mono", monospace;
+  }
+  .code-label + pre{ border-radius:0 0 10px 10px; margin-top:0; }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 11px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.045);
-      color: var(--accent-2);
-      font-size: 13px;
-      font-weight: 700;
-    }
+  /* tables */
+  table{ width:100%; border-collapse:collapse; margin:14px 0 22px; font-size:0.88rem; }
+  th, td{ text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ color:var(--muted); font-weight:600; font-size:0.76rem; text-transform:uppercase; letter-spacing:0.06em; }
+  tr:last-child td{ border-bottom:none; }
+  td code{ white-space:nowrap; }
 
-    h1 {
-      margin: 20px 0 16px;
-      font-size: clamp(42px, 7vw, 82px);
-      line-height: 0.95;
-      letter-spacing: -0.07em;
-    }
+  .callout{
+    display:flex; gap:12px; padding:14px 16px; border-radius:10px;
+    border:1px solid var(--line); background:var(--panel-2); margin:16px 0; font-size:0.9rem;
+  }
+  .callout.warn{ border-color:rgba(232,163,61,0.35); background:var(--amber-soft); }
+  .callout .ico{ font-size:1.1rem; line-height:1.4; }
+  .callout p{ margin:0; color:var(--text); }
+  .callout p.title{ font-weight:600; margin-bottom:2px; }
 
-    .lead {
-      margin: 0;
-      max-width: 760px;
-      font-size: 19px;
-      color: var(--muted);
-    }
+  .badge-row{ display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 18px; }
+  .badge{
+    font-family:"IBM Plex Mono", monospace; font-size:0.72rem;
+    border:1px solid var(--line-strong); color:var(--muted);
+    padding:4px 9px; border-radius:6px;
+  }
 
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 28px;
-    }
+  .grid-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin:18px 0; }
+  .card{ border:1px solid var(--line); background:var(--panel); border-radius:12px; padding:16px 18px; }
+  .card h4{ margin:0 0 6px; font-size:0.98rem; display:flex; align-items:center; gap:8px;}
+  .card h4 .n{ font-family:"IBM Plex Mono",monospace; color:var(--amber); font-size:0.82rem;}
+  .card p{ margin:0; color:var(--muted); font-size:0.86rem; }
 
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      font-weight: 800;
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.055);
-    }
+  .tree{ background:var(--code-bg); border:1px solid var(--line); border-radius:10px; padding:18px 20px; font-family:"IBM Plex Mono",monospace; font-size:0.83rem; color:var(--muted); overflow-x:auto;}
+  .tree .d{ color:var(--cyan); }
+  .tree .f{ color:var(--text); }
 
-    .button.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #07101f;
-      border: none;
-    }
+  footer{
+    border-top:1px solid var(--line);
+    padding:36px 32px 60px;
+    color:var(--muted-2); font-size:0.85rem;
+  }
+  footer a{ color:var(--muted); }
 
-    .hero-card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.035));
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .terminal-title {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
-      background: rgba(0, 0, 0, 0.18);
-    }
-
-    section {
-      padding: 56px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    h2 {
-      margin: 0 0 14px;
-      font-size: clamp(30px, 4vw, 46px);
-      letter-spacing: -0.045em;
-      line-height: 1.05;
-    }
-
-    h3 {
-      margin: 34px 0 10px;
-      font-size: 24px;
-      letter-spacing: -0.03em;
-    }
-
-    h4 {
-      margin: 24px 0 8px;
-      font-size: 18px;
-    }
-
-    .section-lead {
-      margin: 0 0 24px;
-      color: var(--muted);
-      max-width: 850px;
-      font-size: 17px;
-    }
-
-    .grid {
-      display: grid;
-      gap: 16px;
-    }
-
-    .grid.cols-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .grid.cols-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.045);
-      padding: 20px;
-    }
-
-    .card h3,
-    .card h4 {
-      margin-top: 0;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .tag {
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: rgba(138, 180, 255, 0.11);
-      border: 1px solid rgba(138, 180, 255, 0.22);
-      color: #dbe8ff;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    pre {
-      margin: 14px 0 0;
-      overflow: auto;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: var(--code-bg);
-      padding: 16px;
-      color: #d7e3ff;
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    code {
-      font-family:
-        "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    }
-
-    :not(pre) > code {
-      padding: 2px 6px;
-      border-radius: 7px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #e4ecff;
-      font-size: 0.92em;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 14px 0 0;
-      overflow: hidden;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.035);
-    }
-
-    th,
-    td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      color: var(--accent-2);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .module {
-      margin-top: 22px;
-      padding: 24px;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .module-head {
-      display: flex;
-      align-items: start;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 14px;
-    }
-
-    .module-head h3 {
-      margin: 0;
-    }
-
-    .pill {
-      white-space: nowrap;
-      font-size: 12px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-    }
-
-    .callout {
-      border-left: 4px solid var(--accent-2);
-      background: rgba(180, 248, 200, 0.08);
-      padding: 14px 16px;
-      border-radius: 12px;
-      color: #eafff1;
-      margin-top: 14px;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 30px 0 46px;
-      color: var(--muted);
-    }
-
-    @media (max-width: 880px) {
-      .hero-grid,
-      .grid.cols-2,
-      .grid.cols-3 {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      nav {
-        justify-content: flex-start;
-      }
-
-      .module-head {
-        flex-direction: column;
-      }
-    }
-  </style>
+  /* mobile */
+  @media (max-width: 920px){
+    .hero{ grid-template-columns:1fr; padding-top:40px; }
+    .layout{ grid-template-columns:1fr; }
+    .sidebar{ position:static; height:auto; border-right:none; border-bottom:1px solid var(--line); padding:20px 20px 8px; }
+    .content{ padding:32px 20px 80px; }
+    .hero h1{ font-size:2.05rem; }
+    .top-links .hide-mobile{ display:none; }
+  }
+</style>
 </head>
-
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="brand" href="#top">
-        <span class="logo">AI</span>
-        <span>agentic-ai-kit</span>
-      </a>
 
-      <nav>
-        <a href="#install">Install</a>
-        <a href="#quickstart">Quickstart</a>
-        <a href="#modules">Modules</a>
-        <a href="#constructors">Constructors</a>
-        <a href="#examples">Examples</a>
-        <a href="#pages">GitHub Pages</a>
-      </nav>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="chip">Ai</div>
+      agentic-ai-kit <span class="sub hide-mobile">· docs</span>
     </div>
-  </header>
+    <div class="top-links">
+      <a href="#installation" class="hide-mobile">Install</a>
+      <a href="#agents" class="hide-mobile">Agents</a>
+      <a href="#examples" class="hide-mobile">Examples</a>
+      <a class="gh-btn" href="https://github.com/shashank14581/agentic-ai-kit" target="_blank" rel="noopener">
+        ★ GitHub
+      </a>
+    </div>
+  </div>
+</div>
 
-  <main id="top">
-    <div class="shell">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <span class="eyebrow">Gemini-based agent framework</span>
-            <h1>Build agents from first principles.</h1>
-            <p class="lead">
-              <strong>agentic-ai-kit</strong> is a progressive Python framework for building
-              conversational agents, tool-using agents, structured-output agents, dataframe agents,
-              long-term memory systems, RAG workflows, MCP-style tools, multi-agent patterns,
-              and SQL AI enrichment over SQLite.
-            </p>
+<div class="hero">
+  <div>
+    <div class="eyebrow">Python · Google Gemini · MIT Licensed</div>
+    <h1>Building blocks for <em>agentic</em> Python systems.</h1>
+    <p class="lede">A progressive framework for conversational agents, tool use, memory, multi-agent orchestration, RAG, MCP-style tool servers, and scikit-learn automation — all wired to Google Gemini.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#installation">Get started →</a>
+      <a class="btn btn-ghost" href="#agents">Browse the agent kit</a>
+    </div>
+    <div class="hero-meta">
+      <span>Package: <b>agentic-ai</b></span>
+      <span>Import: <b>agentic_ai</b></span>
+      <span>License: <b>MIT</b></span>
+    </div>
+  </div>
 
-            <div class="hero-actions">
-              <a class="button primary" href="#quickstart">Start building</a>
-              <a class="button" href="https://pypi.org/project/agentic-ai-kit/" target="_blank" rel="noreferrer">PyPI</a>
-              <a class="button" href="https://github.com/shashank14581/agentic-ai-kit" target="_blank" rel="noreferrer">GitHub</a>
-            </div>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 460 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="dot" markerWidth="6" markerHeight="6" refX="3" refY="3">
+          <circle cx="3" cy="3" r="2.4" fill="#5fd0c9"/>
+        </marker>
+      </defs>
+      <!-- traces -->
+      <g stroke="rgba(95,208,201,0.55)" stroke-width="1.4" fill="none">
+        <path d="M230,150 L230,110 L120,110 L120,70" marker-end="url(#dot)"/>
+        <path d="M230,150 L230,110 L340,110 L340,70" marker-end="url(#dot)"/>
+        <path d="M230,190 L230,225 L100,225 L100,255" marker-end="url(#dot)"/>
+        <path d="M230,190 L230,225 L230,255" marker-end="url(#dot)"/>
+        <path d="M230,190 L230,225 L360,225 L360,255" marker-end="url(#dot)"/>
+        <path d="M190,170 L60,170 L60,150" marker-end="url(#dot)"/>
+        <path d="M270,170 L400,170 L400,150" marker-end="url(#dot)"/>
+      </g>
+      <!-- center chip: BaseAgent -->
+      <rect x="170" y="150" width="120" height="40" rx="8" fill="#152227" stroke="#e8a33d" stroke-width="1.6"/>
+      <text x="230" y="174" text-anchor="middle" fill="#e8a33d" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600">BaseAgent</text>
 
-            <div class="tag-row">
-              <span class="tag">BaseAgent</span>
-              <span class="tag">ToolAgent</span>
-              <span class="tag">SQL AI</span>
-              <span class="tag">LongTermMemory</span>
-              <span class="tag">RAG</span>
-              <span class="tag">MCP</span>
-            </div>
-          </div>
+      <!-- top nodes -->
+      <rect x="70" y="42" width="100" height="30" rx="7" fill="#111c20" stroke="rgba(154,196,199,0.4)"/>
+      <text x="120" y="61" text-anchor="middle" fill="#e7f0ef" font-family="IBM Plex Mono, monospace" font-size="11">ToolAgent</text>
 
-          <div class="hero-card">
-            <div class="terminal-title">Install and run</div>
-            <pre><code>pip install agentic-ai-kit
+      <rect x="290" y="42" width="100" height="30" rx="7" fill="#111c20" stroke="rgba(154,196,199,0.4)"/>
+      <text x="340" y="61" text-anchor="middle" fill="#e7f0ef" font-family="IBM Plex Mono, monospace" font-size="11">RAGAgent</text>
 
-export GEMINI_API_KEY="your-key-here"
+      <!-- side nodes -->
+      <rect x="10" y="128" width="100" height="30" rx="7" fill="#111c20" stroke="rgba(154,196,199,0.4)"/>
+      <text x="60" y="147" text-anchor="middle" fill="#e7f0ef" font-family="IBM Plex Mono, monospace" font-size="11">JsonAgent</text>
 
-python - &lt;&lt;'PY'
-from agentic_ai.agents import BaseAgent
+      <rect x="350" y="128" width="100" height="30" rx="7" fill="#111c20" stroke="rgba(154,196,199,0.4)"/>
+      <text x="400" y="147" text-anchor="middle" fill="#e7f0ef" font-family="IBM Plex Mono, monospace" font-size="11">MLEAgent</text>
 
-agent = BaseAgent(
-    name="Sage",
-    sys_prompt="You are concise and useful.",
-    extract_memory=False,
-)
+      <!-- bottom nodes -->
+      <rect x="50" y="255" width="100" height="30" rx="7" fill="#111c20" stroke="rgba(154,196,199,0.4)"/>
+      <text x="100" y="274" text-anchor="middle" fill="#e7f0ef" font-family="IBM Plex Mono, monospace" font-size="11">Memory</text>
 
-print(agent.think(
-    "Explain agentic AI in simple terms.",
-    stream=False,
-))
-PY</code></pre>
-          </div>
-        </div>
-      </section>
+      <rect x="180" y="255" width="100" height="30" rx="7" fill="#111c20" stroke="rgba(154,196,199,0.4)"/>
+      <text x="230" y="274" text-anchor="middle" fill="#e7f0ef" font-family="IBM Plex Mono, monospace" font-size="11">Patterns</text>
 
-      <section id="install">
-        <h2>Installation</h2>
-        <p class="section-lead">
-          Install from PyPI, set a Gemini API key, and import from the Python package
-          namespace <code>agentic_ai</code>.
-        </p>
+      <rect x="310" y="255" width="100" height="30" rx="7" fill="#111c20" stroke="rgba(154,196,199,0.4)"/>
+      <text x="360" y="274" text-anchor="middle" fill="#e7f0ef" font-family="IBM Plex Mono, monospace" font-size="11">MCP / SQL AI</text>
 
-        <div class="grid cols-2">
-          <div class="card">
-            <h3>PyPI</h3>
-            <pre><code>pip install agentic-ai-kit</code></pre>
-          </div>
+      <text x="230" y="315" text-anchor="middle" fill="#6c8386" font-family="IBM Plex Mono, monospace" font-size="10.5">every module composes around one agent core</text>
+    </svg>
+  </div>
+</div>
 
-          <div class="card">
-            <h3>Latest GitHub version</h3>
-            <pre><code>pip install --upgrade --force-reinstall \
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="side-group">
+      <div class="side-title">Start</div>
+      <a href="#installation">Installation</a>
+      <a href="#quickstart">Quick start</a>
+      <a href="#layout-section">Package layout</a>
+    </div>
+    <div class="side-group">
+      <div class="side-title">Agents</div>
+      <a href="#base-agent">BaseAgent</a>
+      <a href="#tool-agent">ToolAgent</a>
+      <a href="#json-agent">JsonAgent</a>
+      <a href="#reasoning-agent">ReasoningAgent</a>
+      <a href="#analyst-agent">AnalystAgent</a>
+      <a href="#mle-agent">MLEAgent</a>
+      <a href="#auto-model-agent">AutoModelAgent</a>
+      <a href="#rag-agent">RAGAgent</a>
+    </div>
+    <div class="side-group">
+      <div class="side-title">Memory</div>
+      <a href="#short-term">Short-term</a>
+      <a href="#long-term">Long-term</a>
+      <a href="#shared-memory">Shared</a>
+    </div>
+    <div class="side-group">
+      <div class="side-title">Systems</div>
+      <a href="#tools">Tools</a>
+      <a href="#sql-ai">SQL AI</a>
+      <a href="#patterns">Multi-agent patterns</a>
+      <a href="#mcp">MCP</a>
+    </div>
+    <div class="side-group">
+      <div class="side-title">Reference</div>
+      <a href="#examples">Examples</a>
+      <a href="#philosophy">Design philosophy</a>
+      <a href="#notes">Important notes</a>
+      <a href="#license">License</a>
+    </div>
+  </aside>
+
+  <main class="content">
+
+    <!-- INSTALLATION -->
+    <section class="doc" id="installation">
+      <div class="section-tag">01 · setup</div>
+      <h2 class="h-main">Installation</h2>
+      <p class="lead">Install from PyPI, or track the GitHub repository directly for the latest changes.</p>
+
+      <div class="code-label">bash · pypi</div>
+<pre><code class="language-bash">pip install agentic-ai-kit</code></pre>
+
+      <div class="code-label">bash · github (latest)</div>
+<pre><code class="language-bash">pip install --upgrade --force-reinstall \
   git+https://github.com/shashank14581/agentic-ai-kit.git</code></pre>
-          </div>
-        </div>
 
-        <h3>Set Gemini API key</h3>
-        <pre><code>export GEMINI_API_KEY="your-key-here"</code></pre>
+      <p>Every agent talks to Google Gemini, so set an API key before running anything:</p>
 
-        <h3>Google Colab</h3>
-        <pre><code>import os
+      <div class="code-label">bash · environment</div>
+<pre><code class="language-bash">export GEMINI_API_KEY="your-key-here"</code></pre>
+
+      <p>Running inside Google Colab:</p>
+
+      <div class="code-label">python · colab</div>
+<pre><code class="language-python">import os
 from google.colab import userdata
 
-gemini_key = userdata.get("GEMINI_API_KEY")
+os.environ["GEMINI_API_KEY"] = userdata.get("GEMINI_API_KEY")</code></pre>
+    </section>
 
-if not gemini_key:
-    raise EnvironmentError("Add GEMINI_API_KEY in Colab Secrets first.")
+    <!-- QUICKSTART -->
+    <section class="doc" id="quickstart">
+      <div class="section-tag">02 · first agent</div>
+      <h2 class="h-main">Quick start</h2>
+      <p class="lead">Every part of the kit builds on <code>BaseAgent</code>. Give it a persona, pick a Gemini model, and start talking to it.</p>
 
-os.environ["GEMINI_API_KEY"] = gemini_key</code></pre>
-      </section>
-
-      <section id="quickstart">
-        <h2>Quickstart</h2>
-        <p class="section-lead">
-          The simplest agent is a <code>BaseAgent</code>. It wraps a Gemini model with a name,
-          system prompt, optional memory behavior, and a <code>think()</code> method.
-        </p>
-
-        <pre><code>import os
-
-from agentic_ai.agents import BaseAgent
-
-
-if not os.getenv("GEMINI_API_KEY"):
-    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
-
+      <div class="code-label">python · quickstart.py</div>
+<pre><code class="language-python">from agentic_ai.agents import BaseAgent
 
 agent = BaseAgent(
     name="Alfred",
@@ -521,70 +438,76 @@ agent = BaseAgent(
 )
 
 response = agent.think(
-    "Good morning. What should I focus on today?",
+    "Good morning! What should I do today?",
     stream=False,
 )
 
 print(response)</code></pre>
-      </section>
+    </section>
 
-      <section id="modules">
-        <h2>Modules</h2>
-        <p class="section-lead">
-          The kit is organized around composable agent primitives instead of one heavy abstraction.
-        </p>
+    <!-- PACKAGE LAYOUT -->
+    <section class="doc" id="layout-section">
+      <div class="section-tag">03 · structure</div>
+      <h2 class="h-main">Package layout</h2>
+      <p class="lead">Each subsystem lives in its own module, so you only import what you need.</p>
 
-        <div class="grid cols-3">
-          <div class="card">
-            <h3>Agents</h3>
-            <p class="muted">Conversational, tool-using, JSON, reasoning, analyst, MLE, and AutoModel agents.</p>
-          </div>
+      <div class="tree">agentic_ai/
+├── <span class="d">agents/</span>
+│   ├── <span class="f">base.py</span>            <span style="color:#6c8386"># BaseAgent</span>
+│   ├── <span class="f">tool_agent.py</span>       <span style="color:#6c8386"># ToolAgent — Gemini function calling</span>
+│   ├── <span class="f">json_agent.py</span>       <span style="color:#6c8386"># JsonAgent — structured output</span>
+│   ├── <span class="f">reasoning_agent.py</span>  <span style="color:#6c8386"># ReasoningAgent — plan → answer</span>
+│   ├── <span class="f">analyst_agent.py</span>    <span style="color:#6c8386"># AnalystAgent — dataframe analytics</span>
+│   ├── <span class="f">mle_agent.py</span>        <span style="color:#6c8386"># MLEAgent — baseline model training</span>
+│   └── <span class="f">auto_model_agent.py</span> <span style="color:#6c8386"># AutoModelAgent — end-to-end ML workflow</span>
+├── <span class="d">memory/</span>
+│   ├── <span class="f">short_term.py</span>       <span style="color:#6c8386"># windowed conversation turns</span>
+│   ├── <span class="f">long_term.py</span>        <span style="color:#6c8386"># SQLite-backed persistence</span>
+│   └── <span class="f">shared.py</span>           <span style="color:#6c8386"># thread-safe cross-agent KV store</span>
+├── <span class="d">tools/</span>
+│   ├── <span class="f">registry.py</span>         <span style="color:#6c8386"># function → Gemini tool schema</span>
+│   └── <span class="f">builtins.py</span>
+├── <span class="d">patterns/</span>
+│   ├── <span class="f">orchestrator.py</span>     <span style="color:#6c8386"># run_conversation / run_supervisor</span>
+│   ├── <span class="f">parallel.py</span>         <span style="color:#6c8386"># run_parallel</span>
+│   └── <span class="f">debate.py</span>           <span style="color:#6c8386"># run_debate</span>
+├── <span class="d">rag/</span>
+│   ├── <span class="f">chunker.py</span>
+│   ├── <span class="f">embedder.py</span>
+│   ├── <span class="f">vector_store.py</span>
+│   └── <span class="f">rag_agent.py</span>
+├── <span class="d">mcp/</span>
+│   ├── <span class="f">server.py</span>           <span style="color:#6c8386"># MCPServer</span>
+│   └── <span class="f">client.py</span>           <span style="color:#6c8386"># MCPClient</span>
+├── <span class="d">sql_ai/</span>
+│   ├── <span class="f">__init__.py</span>
+│   └── <span class="f">runner.py</span>           <span style="color:#6c8386"># run_ai_sql</span>
+└── <span class="d">examples/</span>              <span style="color:#6c8386"># 11 runnable walkthroughs</span></div>
+    </section>
 
-          <div class="card">
-            <h3>Memory</h3>
-            <p class="muted">Short-term conversation state, durable facts, shared memory, and SQLite-backed long-term memory.</p>
-          </div>
+    <!-- ================= AGENTS ================= -->
+    <section class="doc" id="agents">
+      <div class="section-tag">04 · agents</div>
+      <h2 class="h-main">Agents</h2>
+      <p class="lead">Eight agent classes, each extending <code>BaseAgent</code> with a specific capability. Mix and match them inside the orchestration patterns below.</p>
 
-          <div class="card">
-            <h3>SQL AI</h3>
-            <p class="muted">Use Gemini pseudo-functions inside SQLite-style queries to enrich rows with summaries, labels, and keywords.</p>
-          </div>
+      <div class="grid-cards">
+        <div class="card"><h4><span class="n">01</span> BaseAgent</h4><p>Persona, memory, streaming — the foundation every other agent builds on.</p></div>
+        <div class="card"><h4><span class="n">02</span> ToolAgent</h4><p>Gemini function calling over registered Python callables.</p></div>
+        <div class="card"><h4><span class="n">03</span> JsonAgent</h4><p>Returns a parsed dict instead of free-form text.</p></div>
+        <div class="card"><h4><span class="n">04</span> ReasoningAgent</h4><p>Separates planning text from the final answer; chains into other agents.</p></div>
+        <div class="card"><h4><span class="n">05</span> AnalystAgent</h4><p>Dataframe profiling, grouped stats, correlation — plus Gemini interpretation.</p></div>
+        <div class="card"><h4><span class="n">06</span> MLEAgent</h4><p>Leakage scan, baseline scikit-learn training, metric comparison.</p></div>
+        <div class="card"><h4><span class="n">07</span> AutoModelAgent</h4><p>End-to-end dataframe → trained model pipeline, policy-driven.</p></div>
+        <div class="card"><h4><span class="n">08</span> RAGAgent</h4><p>Chunk, embed, retrieve, and answer grounded in your own text.</p></div>
+      </div>
 
-          <div class="card">
-            <h3>RAG</h3>
-            <p class="muted">Chunk text, embed it, store vectors, retrieve context, and answer with retrieved material.</p>
-          </div>
+      <!-- BaseAgent -->
+      <h3 class="h-sub" id="base-agent">BaseAgent <span class="file-badge">agentic_ai/agents/base.py</span></h3>
+      <p>The foundation for all other agents: persona and system instructions, recent-turn conversation memory, optional durable-fact extraction, streaming and non-streaming generation, and a configurable Gemini model.</p>
 
-          <div class="card">
-            <h3>Tools</h3>
-            <p class="muted">Register Python functions and expose them to Gemini function calling.</p>
-          </div>
-
-          <div class="card">
-            <h3>MCP</h3>
-            <p class="muted">Minimal MCP-style local server/client pattern for exposing tools over HTTP.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="constructors">
-        <h2>Constructors and API reference</h2>
-        <p class="section-lead">
-          This section documents the main public classes and functions.
-        </p>
-
-        <div class="module" id="baseagent">
-          <div class="module-head">
-            <div>
-              <h3>BaseAgent</h3>
-              <p class="muted">The foundation for all agents.</p>
-            </div>
-            <span class="pill">agentic_ai.agents</span>
-          </div>
-
-          <pre><code>from agentic_ai.agents import BaseAgent
-
-BaseAgent(
+      <h4 class="h-mini">Constructor</h4>
+<pre><code class="language-python">BaseAgent(
     name: str,
     sys_prompt: str,
     model: str = "gemini-2.5-flash-lite",
@@ -596,81 +519,67 @@ BaseAgent(
     thinking_budget: int = 0,
 )</code></pre>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Parameter</th>
-                <th>Meaning</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td><code>name</code></td><td>Display name of the agent.</td></tr>
-              <tr><td><code>sys_prompt</code></td><td>System prompt/persona used by Gemini.</td></tr>
-              <tr><td><code>model</code></td><td>Gemini model name.</td></tr>
-              <tr><td><code>api_key</code></td><td>Optional Gemini API key. If omitted, reads <code>GEMINI_API_KEY</code>.</td></tr>
-              <tr><td><code>memory_window</code></td><td>Number of recent turns included in memory context.</td></tr>
-              <tr><td><code>max_turns</code></td><td>Optional maximum number of retained conversation turns.</td></tr>
-              <tr><td><code>max_facts</code></td><td>Maximum durable facts retained in the in-agent fact store.</td></tr>
-              <tr><td><code>extract_memory</code></td><td>Whether to extract durable facts from user messages.</td></tr>
-              <tr><td><code>thinking_budget</code></td><td>Gemini thinking budget where supported.</td></tr>
-            </tbody>
-          </table>
+      <h4 class="h-mini">Example</h4>
+<pre><code class="language-python">import os
 
-          <h4>Runnable example</h4>
-          <pre><code>from agentic_ai.agents import BaseAgent
+from agentic_ai.agents import BaseAgent
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
 
 agent = BaseAgent(
     name="Sage",
-    sys_prompt="You are concise, clear, and practical.",
+    sys_prompt="You are a wise and concise assistant.",
     model="gemini-2.5-flash-lite",
-    extract_memory=False,
+    memory_window=3,
+    max_turns=10,
+    extract_memory=True,
 )
 
 response = agent.think(
-    "Explain Python classes with one example.",
+    "I am learning Python. Explain list comprehensions simply.",
     stream=False,
 )
 
-print(response)</code></pre>
-        </div>
+print(response)
+print(agent.memory)
+print(agent.facts_store)
 
-        <div class="module" id="toolagent">
-          <div class="module-head">
-            <div>
-              <h3>ToolAgent</h3>
-              <p class="muted">An agent that can call registered Python functions.</p>
-            </div>
-            <span class="pill">agentic_ai.agents</span>
-          </div>
+agent.clear_memory()</code></pre>
 
-          <pre><code>from agentic_ai.agents import ToolAgent
+      <!-- ToolAgent -->
+      <h3 class="h-sub" id="tool-agent">ToolAgent <span class="file-badge">agentic_ai/agents/tool_agent.py</span></h3>
+      <p><code>ToolAgent</code> extends <code>BaseAgent</code> with Gemini function calling. Register plain Python functions and let the model decide when to call them.</p>
 
-ToolAgent(
+      <h4 class="h-mini">Constructor</h4>
+<pre><code class="language-python">ToolAgent(
     name: str,
     sys_prompt: str,
     model: str = "gemini-2.5-flash",
     api_key: str | None = None,
 )</code></pre>
 
-          <h4>Register a tool</h4>
-          <pre><code>agent.register_tool(
-    fn,
-    description: str | None = None,
-    params: dict | None = None,
-    required: list[str] | None = None,
-)</code></pre>
+      <h4 class="h-mini">Example</h4>
+<pre><code class="language-python">import os
 
-          <h4>Runnable example</h4>
-          <pre><code>from agentic_ai.agents import ToolAgent
+from agentic_ai.agents import ToolAgent
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
 
 
 def calculate_rectangle_area(length: float, width: float) -> float:
+    """Calculate the area of a rectangle."""
     return length * width
 
 
 agent = ToolAgent(
     name="Calculator",
-    sys_prompt="Use tools whenever exact calculation is required.",
+    sys_prompt="Use available tools whenever calculation is required.",
+    model="gemini-2.5-flash",
 )
 
 agent.register_tool(calculate_rectangle_area)
@@ -680,20 +589,24 @@ response = agent.think(
 )
 
 print(response)</code></pre>
-        </div>
 
-        <div class="module" id="jsonagent">
-          <div class="module-head">
-            <div>
-              <h3>JsonAgent</h3>
-              <p class="muted">An agent that returns a parsed Python dictionary.</p>
-            </div>
-            <span class="pill">agentic_ai.agents</span>
-          </div>
+      <p>Parameters can be described explicitly instead of inferred from type hints:</p>
+<pre><code class="language-python">agent.register_tool(
+    calculate_rectangle_area,
+    description="Calculate the area of a rectangle.",
+    params={
+        "length": "NUMBER",
+        "width": "NUMBER",
+    },
+    required=["length", "width"],
+)</code></pre>
 
-          <pre><code>from agentic_ai.agents import JsonAgent
+      <!-- JsonAgent -->
+      <h3 class="h-sub" id="json-agent">JsonAgent <span class="file-badge">agentic_ai/agents/json_agent.py</span></h3>
+      <p><code>JsonAgent</code> returns a parsed Python dictionary instead of free-form text, driven by an optional schema.</p>
 
-JsonAgent(
+      <h4 class="h-mini">Constructor</h4>
+<pre><code class="language-python">JsonAgent(
     name: str,
     sys_prompt: str,
     schema: dict | None = None,
@@ -701,39 +614,46 @@ JsonAgent(
     api_key: str | None = None,
 )</code></pre>
 
-          <h4>Runnable example</h4>
-          <pre><code>from agentic_ai.agents import JsonAgent
+      <h4 class="h-mini">Example</h4>
+<pre><code class="language-python">import os
+
+from agentic_ai.agents import JsonAgent
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
 
 agent = JsonAgent(
     name="Extractor",
-    sys_prompt="Extract structured data from text.",
+    sys_prompt="Extract structured entities from the supplied text.",
     schema={
-        "name": "string",
-        "role": "string",
+        "people": ["string"],
+        "places": ["string"],
+        "dates": ["string"],
     },
+    model="gemini-2.5-flash-lite",
 )
 
 result = agent.think(
-    "Shashank is building an AI framework.",
-    stream=False,
+    "Alice visited Paris on 14 July with Bob."
 )
 
 print(result)
-print(result["name"])</code></pre>
-        </div>
+print(result["people"])
+print(result["places"])</code></pre>
 
-        <div class="module" id="reasoningagent">
-          <div class="module-head">
-            <div>
-              <h3>ReasoningAgent</h3>
-              <p class="muted">Returns a structured output with intermediate reasoning text and final answer.</p>
-            </div>
-            <span class="pill">agentic_ai.agents</span>
-          </div>
+      <div class="callout">
+        <div class="ico">⚠</div>
+        <div><p class="title">Parsing errors</p><p><code>JsonAgent.think()</code> raises <code>ValueError</code> if the model's response cannot be parsed as JSON.</p></div>
+      </div>
 
-          <pre><code>from agentic_ai.agents import ReasoningAgent
+      <!-- ReasoningAgent -->
+      <h3 class="h-sub" id="reasoning-agent">ReasoningAgent <span class="file-badge">agentic_ai/agents/reasoning_agent.py</span></h3>
+      <p><code>ReasoningAgent</code> returns a <code>ReasoningOutput</code> object exposing <code>reasoning</code> (planning text), <code>answer</code> (final response), and <code>context_for_next</code> — a combined string built for handing off to another agent.</p>
 
-ReasoningAgent(
+      <h4 class="h-mini">Constructor</h4>
+<pre><code class="language-python">ReasoningAgent(
     name: str,
     sys_prompt: str,
     show_reasoning: bool = True,
@@ -741,36 +661,67 @@ ReasoningAgent(
     api_key: str | None = None,
 )</code></pre>
 
-          <h4>Runnable example</h4>
-          <pre><code>from agentic_ai.agents import ReasoningAgent
+      <h4 class="h-mini">Example</h4>
+<pre><code class="language-python">import os
+
+from agentic_ai.agents import ReasoningAgent
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
 
 planner = ReasoningAgent(
     name="Planner",
-    sys_prompt="Break work into clear steps.",
-    show_reasoning=False,
+    sys_prompt="Break complex tasks into practical steps.",
+    model="gemini-2.5-flash-lite",
+    show_reasoning=True,
 )
 
 result = planner.think(
-    "Create a 3-step learning plan for PyTorch.",
+    "Plan a surprise birthday party for 30 people on a 500 dollar budget.",
     stream=False,
 )
 
-print(result.answer)
-print(result.context_for_next)</code></pre>
-        </div>
+print("REASONING")
+print(result.reasoning)
 
-        <div class="module" id="analystagent">
-          <div class="module-head">
-            <div>
-              <h3>AnalystAgent</h3>
-              <p class="muted">DataFrame-aware analytics specialist.</p>
-            </div>
-            <span class="pill">agentic_ai.agents</span>
-          </div>
+print("\nANSWER")
+print(result.answer)</code></pre>
 
-          <pre><code>from agentic_ai.agents import AnalystAgent
+      <h4 class="h-mini">Planner → executor handoff</h4>
+<pre><code class="language-python">from agentic_ai.agents import BaseAgent, ReasoningAgent
 
-AnalystAgent(
+planner = ReasoningAgent(
+    name="Planner",
+    sys_prompt="Create a concrete implementation plan.",
+    model="gemini-2.5-flash-lite",
+)
+
+executor = BaseAgent(
+    name="Executor",
+    sys_prompt="Execute the supplied plan carefully.",
+    model="gemini-2.5-flash-lite",
+)
+
+plan = planner.think(
+    "Create a release checklist for a Python package.",
+    stream=False,
+)
+
+result = executor.think(
+    plan.context_for_next,
+    stream=False,
+)
+
+print(result)</code></pre>
+
+      <!-- AnalystAgent -->
+      <h3 class="h-sub" id="analyst-agent">AnalystAgent <span class="file-badge">agentic_ai/agents/analyst_agent.py</span></h3>
+      <p><code>AnalystAgent</code> is a dataframe-aware analytics specialist. It profiles data, summarizes numeric and categorical columns, calculates grouped metrics, inspects correlations, and can ask Gemini to interpret the results.</p>
+
+      <h4 class="h-mini">Constructor</h4>
+<pre><code class="language-python">AnalystAgent(
     name: str = "Analyst",
     domain_context: str | None = None,
     model: str = "gemini-2.5-flash-lite",
@@ -780,58 +731,85 @@ AnalystAgent(
     thinking_budget: int = 0,
 )</code></pre>
 
-          <h4>Main methods</h4>
-          <table>
-            <thead>
-              <tr><th>Method</th><th>Purpose</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>profile_dataframe(df)</code></td><td>Rows, columns, dtypes, missing values, duplicates.</td></tr>
-              <tr><td><code>numeric_summary(df)</code></td><td>Numeric describe summary.</td></tr>
-              <tr><td><code>categorical_summary(df, top_n=10)</code></td><td>Top category counts.</td></tr>
-              <tr><td><code>groupby_summary(df, group_col, metric_col, agg="mean")</code></td><td>Grouped metric summary.</td></tr>
-              <tr><td><code>correlation_summary(df)</code></td><td>Numeric correlation matrix.</td></tr>
-              <tr><td><code>analyze_dataframe(df, question, stream=True)</code></td><td>Creates dataframe context and asks the agent to analyze it.</td></tr>
-            </tbody>
-          </table>
+      <h4 class="h-mini">Key methods</h4>
+      <table>
+        <tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+        <tr><td><code>profile_dataframe(df)</code></td><td>dict</td><td>Rows, columns, data types, missingness, and duplicates</td></tr>
+        <tr><td><code>numeric_summary(df)</code></td><td>dict</td><td>Descriptive statistics for numeric columns</td></tr>
+        <tr><td><code>categorical_summary(df, top_n=10)</code></td><td>dict</td><td>Top values for categorical columns</td></tr>
+        <tr><td><code>groupby_summary(df, group_col, metric_col, agg)</code></td><td>list[dict]</td><td>Group-level aggregation</td></tr>
+        <tr><td><code>correlation_summary(df)</code></td><td>dict</td><td>Numeric correlation matrix</td></tr>
+        <tr><td><code>analyze_dataframe(df, question)</code></td><td>str</td><td>Gemini-generated interpretation</td></tr>
+      </table>
 
-          <h4>Runnable example</h4>
-          <pre><code>import pandas as pd
+      <h4 class="h-mini">Example</h4>
+<pre><code class="language-python">import os
+
+import pandas as pd
+
 from agentic_ai.agents import AnalystAgent
 
-df = pd.DataFrame({
-    "segment": ["A", "A", "B", "B"],
-    "sales": [100, 140, 80, 120],
-})
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
+
+df = pd.DataFrame(
+    {
+        "department": ["Engineering", "Sales", "Engineering", "Support",
+                        "Sales", "Support", "Engineering", "Sales"],
+        "employees": [32, 25, 35, 18, 28, 20, 40, 30],
+        "monthly_cost": [280000, 190000, 310000, 120000, 205000, 135000, 350000, 220000],
+        "satisfaction_score": [8.3, 7.1, 8.5, 6.9, 7.4, 7.2, 8.7, 7.6],
+    }
+)
 
 agent = AnalystAgent(
-    domain_context="Simple sales analysis.",
+    domain_context="Workforce planning and departmental performance.",
+    model="gemini-2.5-flash-lite",
 )
 
 print(agent.profile_dataframe(df))
-print(agent.groupby_summary(df, "segment", "sales", agg="mean"))
+print(agent.numeric_summary(df))
+print(agent.categorical_summary(df))
 
-answer = agent.analyze_dataframe(
-    df,
-    "Which segment has higher average sales?",
+print(
+    agent.groupby_summary(
+        df=df, group_col="department", metric_col="monthly_cost", agg="sum",
+    )
+)
+
+print(agent.correlation_summary(df))
+
+analysis = agent.analyze_dataframe(
+    df=df,
+    question=(
+        "Which departments appear most expensive, how does satisfaction vary, "
+        "and what should management investigate next?"
+    ),
     stream=False,
 )
 
-print(answer)</code></pre>
-        </div>
+print(analysis)</code></pre>
 
-        <div class="module" id="mleagent">
-          <div class="module-head">
-            <div>
-              <h3>MLEAgent</h3>
-              <p class="muted">Machine-learning engineering specialist for pandas DataFrames.</p>
-            </div>
-            <span class="pill">agentic_ai.agents</span>
-          </div>
+      <div class="callout">
+        <div class="ico">ℹ</div>
+        <div><p>All dataframe calculations run locally with pandas. Only <code>analyze_dataframe()</code> sends the generated summary context to Gemini.</p></div>
+      </div>
 
-          <pre><code>from agentic_ai.agents import MLEAgent
+      <!-- MLEAgent -->
+      <h3 class="h-sub" id="mle-agent">MLEAgent <span class="file-badge">agentic_ai/agents/mle_agent.py</span></h3>
+      <p><code>MLEAgent</code> profiles a dataframe, examines the target and features, runs a heuristic leakage scan, trains baseline scikit-learn pipelines, compares metrics, and returns the best fitted pipeline. The <code>model</code> parameter only controls the Gemini model used for interpretation — predictive models are selected internally.</p>
 
-MLEAgent(
+      <div class="badge-row">
+        <span class="badge">classification → logistic regression</span>
+        <span class="badge">classification → random forest</span>
+        <span class="badge">regression → linear regression</span>
+        <span class="badge">regression → random forest</span>
+      </div>
+
+      <h4 class="h-mini">Constructor</h4>
+<pre><code class="language-python">MLEAgent(
     name: str = "MLE",
     project_context: str | None = None,
     model: str = "gemini-2.5-flash-lite",
@@ -841,37 +819,114 @@ MLEAgent(
     thinking_budget: int = 0,
 )</code></pre>
 
-          <h4>Main methods</h4>
-          <table>
-            <thead>
-              <tr><th>Method</th><th>Purpose</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>profile_dataframe(df)</code></td><td>Data quality and schema profile.</td></tr>
-              <tr><td><code>target_summary(df, target_col)</code></td><td>Target type, missingness, distribution.</td></tr>
-              <tr><td><code>feature_summary(df, target_col=None)</code></td><td>Candidate feature summary.</td></tr>
-              <tr><td><code>leakage_scan(df, target_col)</code></td><td>Heuristic leakage-prone column scan.</td></tr>
-              <tr><td><code>train_model(df, target_col, ...)</code></td><td>Train baseline ML models and return the best pipeline.</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <h4 class="h-mini">Classification example</h4>
+<pre><code class="language-python">import os
 
-        <div class="module" id="automodelagent">
-          <div class="module-head">
-            <div>
-              <h3>AutoModelAgent</h3>
-              <p class="muted">End-to-end dataframe-to-model agent built on top of MLEAgent.</p>
-            </div>
-            <span class="pill">agentic_ai.agents</span>
-          </div>
+import numpy as np
+import pandas as pd
 
-          <div class="callout">
-            <strong>Constructor:</strong> <code>AutoModelAgent</code> inherits the constructor from <code>MLEAgent</code>.
-          </div>
+from agentic_ai.agents import MLEAgent
 
-          <h4>Run method</h4>
-          <pre><code>AutoModelAgent.run(
-    df,
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
+
+rng = np.random.default_rng(42)
+row_count = 250
+
+study_hours = rng.normal(5, 2, size=row_count).clip(0.5)
+attendance = rng.normal(82, 10, size=row_count).clip(40, 100)
+previous_score = rng.normal(68, 12, size=row_count).clip(20, 100)
+course_type = rng.choice(["Online", "Classroom", "Hybrid"], size=row_count)
+
+course_effect = np.select(
+    [course_type == "Online", course_type == "Classroom", course_type == "Hybrid"],
+    [-0.3, 0.2, 0.6],
+)
+
+pass_score = (
+    0.45 * study_hours + 0.05 * attendance + 0.04 * previous_score
+    + course_effect + rng.normal(0, 1.5, size=row_count)
+)
+passed = (pass_score > np.median(pass_score)).astype(int)
+
+df = pd.DataFrame({
+    "study_hours": study_hours.round(2),
+    "attendance": attendance.round(2),
+    "previous_score": previous_score.round(2),
+    "course_type": course_type,
+    "passed": passed,
+})
+
+agent = MLEAgent(
+    project_context="Student course-completion prediction.",
+    model="gemini-2.5-flash-lite",
+)
+
+print(agent.target_summary(df, "passed"))
+print(agent.feature_summary(df, "passed"))
+print(agent.leakage_scan(df, "passed"))
+
+result = agent.create_model(
+    df=df,
+    target_col="passed",
+    objective="Predict whether a student will pass the course.",
+    test_size=0.25,
+    random_state=42,
+    interpret=False,
+)
+
+print("Problem type:", result["problem_type"])
+print("Best model:", result["best_model"])
+print("Best score:", result["best_score"])
+print("Model comparison:", result["model_comparison"])
+
+best_pipeline = result["best_pipeline"]
+
+new_students = pd.DataFrame({
+    "study_hours": [2.0, 6.5, 9.0],
+    "attendance": [58.0, 84.0, 96.0],
+    "previous_score": [45.0, 72.0, 91.0],
+    "course_type": ["Online", "Hybrid", "Classroom"],
+})
+
+print(best_pipeline.predict(new_students))</code></pre>
+
+      <p>Set <code>interpret=True</code> to add a Gemini explanation after training:</p>
+<pre><code class="language-python">result = agent.create_model(
+    df=df,
+    target_col="passed",
+    objective="Predict whether a student will pass the course.",
+    interpret=True,
+    stream=False,
+)
+
+print(result["llm_interpretation"])</code></pre>
+
+      <div class="callout warn">
+        <div class="ico">⚠</div>
+        <div><p><code>interpret=False</code> avoids the extra interpretation call, but <code>MLEAgent</code> still requires a Gemini API key during construction because it inherits from <code>BaseAgent</code>.</p></div>
+      </div>
+
+      <!-- AutoModelAgent -->
+      <h3 class="h-sub" id="auto-model-agent">AutoModelAgent <span class="file-badge">agentic_ai/agents/auto_model_agent.py</span></h3>
+      <p><code>AutoModelAgent</code> extends <code>MLEAgent</code> into an end-to-end dataframe-to-model workflow.</p>
+
+      <ol>
+        <li>Profiles the dataframe</li>
+        <li>Summarizes the target</li>
+        <li>Summarizes candidate features</li>
+        <li>Scans for leakage-prone columns</li>
+        <li>Optionally creates a modeling policy with Gemini</li>
+        <li>Trains baseline scikit-learn pipelines</li>
+        <li>Selects the best model</li>
+        <li>Optionally creates a final interpretation</li>
+      </ol>
+
+      <h4 class="h-mini">Main method</h4>
+<pre><code class="language-python">agent.run(
+    df: pd.DataFrame,
     target_col: str,
     objective: str,
     drop_columns: list[str] | None = None,
@@ -879,114 +934,248 @@ MLEAgent(
     random_state: int = 42,
     stream: bool = True,
     interpret: bool = True,
-)</code></pre>
+) -> dict</code></pre>
 
-          <h4>Example</h4>
-          <pre><code>from agentic_ai.agents import AutoModelAgent
+      <h4 class="h-mini">Property price example</h4>
+<pre><code class="language-python">import os
+
+import numpy as np
+import pandas as pd
+
+from agentic_ai.agents import AutoModelAgent
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
+
+rng = np.random.default_rng(42)
+row_count = 350
+
+square_feet = rng.integers(600, 3500, size=row_count)
+bedrooms = rng.integers(1, 6, size=row_count)
+bathrooms = rng.integers(1, 5, size=row_count)
+property_age = rng.integers(0, 50, size=row_count)
+location = rng.choice(["Central", "Suburban", "Outer"], size=row_count, p=[0.30, 0.45, 0.25])
+
+location_effect = np.select(
+    [location == "Central", location == "Suburban", location == "Outer"],
+    [150000, 60000, 0],
+)
+
+sale_price = (
+    180 * square_feet + 25000 * bedrooms + 18000 * bathrooms
+    - 2500 * property_age + location_effect + rng.normal(0, 35000, size=row_count)
+)
+
+df = pd.DataFrame({
+    "property_id": [f"PROP_{i:04d}" for i in range(row_count)],
+    "square_feet": square_feet,
+    "bedrooms": bedrooms,
+    "bathrooms": bathrooms,
+    "property_age": property_age,
+    "location": location,
+    "sale_price": sale_price.round(2),
+})
 
 agent = AutoModelAgent(
-    project_context="Baseline tabular modelling.",
+    project_context="Residential property price prediction.",
+    model="gemini-2.5-flash-lite",
 )
 
 result = agent.run(
     df=df,
-    target_col="target",
-    objective="Create a baseline model for classification.",
+    target_col="sale_price",
+    objective="Predict the sale price of a residential property.",
+    drop_columns=["property_id"],
+    test_size=0.25,
+    random_state=42,
     interpret=False,
 )
 
+print(result["data_profile"])
+print(result["target_summary"])
+print(result["feature_summary"])
+print(result["leakage_scan"])
 print(result["best_model"])
-print(result["best_score"])</code></pre>
-        </div>
+print(result["best_score"])
+print(result["model_result"]["model_comparison"])
 
-        <div class="module" id="memory">
-          <div class="module-head">
-            <div>
-              <h3>LongTermMemory</h3>
-              <p class="muted">SQLite-backed persistent memory.</p>
-            </div>
-            <span class="pill">agentic_ai.memory</span>
-          </div>
+best_pipeline = result["best_pipeline"]
 
-          <pre><code>from agentic_ai.memory.long_term import LongTermMemory
+new_properties = pd.DataFrame({
+    "square_feet": [850, 1650, 2800],
+    "bedrooms": [2, 3, 5],
+    "bathrooms": [1, 2, 4],
+    "property_age": [20, 8, 2],
+    "location": ["Outer", "Suburban", "Central"],
+})
 
-LongTermMemory(
-    db_path: str | Path = "long_term_memory.db",
+print(best_pipeline.predict(new_properties))</code></pre>
+
+      <h4 class="h-mini">Full Gemini-assisted workflow</h4>
+<pre><code class="language-python">result = agent.run(
+    df=df,
+    target_col="sale_price",
+    objective="Predict the sale price of a residential property.",
+    drop_columns=["property_id"],
+    test_size=0.25,
+    random_state=42,
+    interpret=True,
+    stream=False,
+)
+
+print(result["modeling_policy"])
+print(result["interpretation"])</code></pre>
+
+      <p>With <code>interpret=True</code>, two Gemini calls are made: one for modeling-policy generation, one for final result interpretation. With <code>interpret=False</code>, local scikit-learn training still runs and both interpretation fields are returned as <code>None</code>.</p>
+
+      <!-- RAGAgent -->
+      <h3 class="h-sub" id="rag-agent">RAGAgent <span class="file-badge">agentic_ai/rag/rag_agent.py</span></h3>
+      <p><code>RAGAgent</code> combines text chunking, Gemini embeddings, an in-memory vector store, and grounded response generation.</p>
+
+      <h4 class="h-mini">Constructor</h4>
+<pre><code class="language-python">RAGAgent(
+    name: str,
+    sys_prompt: str,
+    top_k: int = 3,
+    **base_agent_kwargs,
 )</code></pre>
 
-          <h4>Methods</h4>
-          <table>
-            <thead>
-              <tr><th>Method</th><th>Purpose</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>log(content, agent="unknown")</code></td><td>Append a memory entry and return its row id.</td></tr>
-              <tr><td><code>search(keyword, agent=None, limit=20)</code></td><td>Search memory content using SQL LIKE.</td></tr>
-              <tr><td><code>recent(n=10, agent=None)</code></td><td>Return recent memory entries.</td></tr>
-              <tr><td><code>clear(agent=None)</code></td><td>Delete memory entries.</td></tr>
-              <tr><td><code>close()</code></td><td>Close the SQLite connection.</td></tr>
-            </tbody>
-          </table>
+      <h4 class="h-mini">Example</h4>
+<pre><code class="language-python">import os
 
-          <h4>Runnable example</h4>
-          <pre><code>from agentic_ai.memory.long_term import LongTermMemory
+from agentic_ai.rag.rag_agent import RAGAgent
+
+
+if not os.getenv("GEMINI_API_KEY"):
+    raise EnvironmentError("Set GEMINI_API_KEY before running this example.")
+
+
+document = """
+The Acme Learning Platform allows learners to cancel a course purchase
+within 14 days. Refunds are processed to the original payment method.
+Completed courses are not eligible for refunds.
+"""
+
+agent = RAGAgent(
+    name="Policy Assistant",
+    sys_prompt=(
+        "Answer only from the retrieved context. "
+        "Say that the answer is unavailable when the context does not contain it."
+    ),
+    top_k=3,
+    model="gemini-2.5-flash-lite",
+)
+
+chunk_count = agent.ingest(document, chunk_size=200, overlap=20)
+print("Chunks ingested:", chunk_count)
+
+answer = agent.think(
+    "How long does a learner have to cancel a course purchase?",
+    stream=False,
+)
+
+print(answer)</code></pre>
+
+      <div class="callout">
+        <div class="ico">ℹ</div>
+        <div><p>The default vector store is in memory and does not persist across Python sessions.</p></div>
+      </div>
+    </section>
+
+    <!-- ================= MEMORY ================= -->
+    <section class="doc" id="memory">
+      <div class="section-tag">05 · state</div>
+      <h2 class="h-main">Memory</h2>
+      <p class="lead">Three complementary stores: a rolling window for context, SQLite for durability, and a shared key-value space for coordinating multiple agents.</p>
+
+      <h3 class="h-sub" id="short-term">Short-term memory <span class="file-badge">agentic_ai/memory/short_term.py</span></h3>
+      <p>A fixed-window store of <code>(user_input, agent_output)</code> pairs.</p>
+<pre><code class="language-python">from agentic_ai.memory.short_term import ShortTermMemory
+
+memory = ShortTermMemory(window=3)
+
+memory.add("What is Python?", "Python is a general-purpose programming language.")
+memory.add("Who created it?", "Python was created by Guido van Rossum.")
+
+print(memory.as_text())
+print(list(memory))
+print("Stored turns:", len(memory))
+
+memory.clear()</code></pre>
+
+      <h3 class="h-sub" id="long-term">Long-term memory <span class="file-badge">agentic_ai/memory/long_term.py</span></h3>
+      <p>SQLite-backed persistent memory for logging, retrieving, and searching entries.</p>
+<pre><code class="language-python">from agentic_ai.memory.long_term import LongTermMemory
 
 memory = LongTermMemory("agent_memory.db")
 
+entry_id = memory.log(
+    content="The deployment target is Python 3.12.",
+    agent="ReleaseManager",
+)
+print("Stored entry:", entry_id)
+
 memory.log(
-    "User is building agentic-ai-kit.",
-    agent="project",
+    content="The package should be published after tests pass.",
+    agent="ReleaseManager",
 )
 
-memory.log(
-    "SQL AI enriches SQLite rows with Gemini-generated columns.",
-    agent="project",
-)
-
-results = memory.search("SQL AI", agent="project")
-
-for row in results:
-    print(row)
+print(memory.recent(n=10, agent="ReleaseManager"))
+print(memory.search("Python", agent="ReleaseManager"))
 
 memory.close()</code></pre>
-        </div>
 
-        <div class="module" id="sql-ai">
-          <div class="module-head">
-            <div>
-              <h3>SQL AI</h3>
-              <p class="muted">Gemini-generated columns inside local SQLite-style queries.</p>
-            </div>
-            <span class="pill">agentic_ai.sql_ai</span>
-          </div>
+      <h3 class="h-sub" id="shared-memory">Shared memory <span class="file-badge">agentic_ai/memory/shared.py</span></h3>
+      <p>A thread-safe in-process key-value store that multiple agents or workers can share.</p>
+<pre><code class="language-python">from agentic_ai.memory.shared import SharedMemory
 
-          <pre><code>from agentic_ai.sql_ai import run_ai_sql, parse_ai_sql
+shared = SharedMemory()
 
-run_ai_sql(
-    sql: str,
-    conn,
-    api_key: str | None = None,
-    batch_size: int = 15,
-    workers: int = 4,
-    default_model: str = "gemini-2.5-flash",
-    temperature: float = 0.3,
-    top_p: float = 0.95,
-    max_output_tokens: int = 8192,
-    write_if_create: bool = True,
-)</code></pre>
+shared.set("plan", "Build, test, and publish the package.")
+shared.set("status", "in_progress")
 
-          <h4>Supported pseudo-functions</h4>
-          <pre><code>ai_generate(prompt='...', model='...') AS generated_text
+print(shared.get("plan"))
+print(shared.all())
 
-ai_summarize(model='...') AS summary
+shared.delete("status")
+shared.clear()</code></pre>
+    </section>
 
-ai_classify(labels='A | B | C', model='...') AS label
+    <!-- TOOLS -->
+    <section class="doc" id="tools">
+      <div class="section-tag">06 · function calling</div>
+      <h2 class="h-main">Tools</h2>
+      <p class="lead"><code>ToolAgent.register_tool()</code> exposes ordinary Python callables to Gemini. Clear names, type hints, and concise docstrings all feed Gemini's decision about when and how to call a function.</p>
 
-ai_extract(prompt='Extract retrieval keywords', count=5, model='...') AS keywords</code></pre>
+<pre><code class="language-python">from agentic_ai.agents import ToolAgent
 
-          <h4>Runnable example</h4>
-          <pre><code>import os
+
+def convert_celsius_to_fahrenheit(celsius: float) -> float:
+    """Convert a Celsius temperature to Fahrenheit."""
+    return celsius * 9 / 5 + 32
+
+
+agent = ToolAgent(
+    name="Converter",
+    sys_prompt="Use tools for unit conversions.",
+)
+
+agent.register_tool(convert_celsius_to_fahrenheit)
+
+print(agent.think("Convert 25 degrees Celsius to Fahrenheit."))</code></pre>
+    </section>
+
+    <!-- SQL AI -->
+    <section class="doc" id="sql-ai">
+      <div class="section-tag">07 · data enrichment</div>
+      <h2 class="h-main">SQL AI</h2>
+      <p class="lead"><code>SQL AI</code> enriches local SQLite query results with Gemini-generated columns — useful for summaries, labels, classifications, keywords, or retrieval-friendly text fields, written directly inside SQL-style queries.</p>
+
+<pre><code class="language-python">import os
 import sqlite3
+
 import pandas as pd
 
 from agentic_ai.sql_ai import run_ai_sql
@@ -1001,8 +1190,9 @@ conn = sqlite3.connect(":memory:")
 records = pd.DataFrame({
     "record_id": [1, 2, 3],
     "topic": ["Access", "Documentation", "Automation"],
+    "priority": ["High", "Medium", "Low"],
     "notes": [
-        "User cannot access account after changing password.",
+        "User cannot access their account after changing password.",
         "Setup instructions are unclear and need examples.",
         "Incoming messages should be classified automatically.",
     ],
@@ -1012,9 +1202,7 @@ records.to_sql("records", conn, if_exists="replace", index=False)
 
 sql = """
 SELECT
-    record_id,
-    topic,
-    notes,
+    record_id, topic, priority, notes,
     ai_generate(
         prompt='Write a short retrieval-friendly summary for this row',
         model='gemini-2.5-flash'
@@ -1022,21 +1210,24 @@ SELECT
 FROM records
 """
 
-result = run_ai_sql(
-    sql=sql,
-    conn=conn,
-    batch_size=2,
-    workers=2,
-)
-
+result = run_ai_sql(sql=sql, conn=conn)
 print(result)</code></pre>
 
-          <h4>Write result back to SQLite</h4>
-          <pre><code>sql = """
+      <h4 class="h-mini">Supported pseudo-functions</h4>
+<pre><code class="language-sql">ai_generate(prompt='...', model='...') AS generated_text
+
+ai_summarize(model='...') AS summary
+
+ai_classify(labels='A | B | C', model='...') AS label
+
+ai_extract(prompt='Extract retrieval keywords', count=5, model='...') AS keywords</code></pre>
+
+      <h4 class="h-mini">Writing results back to SQLite</h4>
+      <p><code>SQL AI</code> also supports a notebook-friendly <code>CREATE OR REPLACE TABLE</code> pattern. SQLite doesn't support this syntax natively — <code>run_ai_sql()</code> handles it by writing the final dataframe back to SQLite.</p>
+<pre><code class="language-python">sql = """
 CREATE OR REPLACE TABLE enriched_records AS
 SELECT
-    record_id,
-    notes,
+    record_id, notes,
     ai_summarize(model='gemini-2.5-flash') AS summary,
     ai_extract(
         prompt='Extract retrieval keywords from this row',
@@ -1049,240 +1240,147 @@ FROM records
 result = run_ai_sql(sql=sql, conn=conn)
 
 saved = pd.read_sql_query("SELECT * FROM enriched_records", conn)
-
 print(saved)</code></pre>
-        </div>
+    </section>
 
-        <div class="module" id="rag">
-          <div class="module-head">
-            <div>
-              <h3>RAGAgent</h3>
-              <p class="muted">Retrieves relevant chunks from a vector store before answering.</p>
-            </div>
-            <span class="pill">agentic_ai.rag</span>
-          </div>
+    <!-- PATTERNS -->
+    <section class="doc" id="patterns">
+      <div class="section-tag">08 · orchestration</div>
+      <h2 class="h-main">Multi-agent patterns</h2>
+      <p class="lead">Lightweight orchestration functions for coordinating more than one agent. Full runnable versions live in <code>agentic_ai/examples/</code>.</p>
 
-          <pre><code>from agentic_ai.rag.rag_agent import RAGAgent
+      <table>
+        <tr><th>Function</th><th>Pattern</th></tr>
+        <tr><td><code>run_conversation()</code></td><td>Round-robin conversation — each agent receives the previous agent's output as its input</td></tr>
+        <tr><td><code>run_supervisor()</code></td><td>Delegation — a supervisor assigns tasks to named worker agents</td></tr>
+        <tr><td><code>run_parallel()</code></td><td>Fan-out execution across multiple agents at once</td></tr>
+        <tr><td><code>run_debate()</code></td><td>Opposing arguments plus a judging pass</td></tr>
+      </table>
 
-RAGAgent(
-    name: str,
-    sys_prompt: str,
-    top_k: int = 3,
-    **kwargs,
-)</code></pre>
+<pre><code class="language-python">from agentic_ai.agents import BaseAgent
+from agentic_ai.patterns.orchestrator import run_conversation
 
-          <h4>Methods</h4>
-          <table>
-            <thead>
-              <tr><th>Method</th><th>Purpose</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>ingest(text, chunk_size=500, overlap=50)</code></td><td>Chunk and embed text into the vector store.</td></tr>
-              <tr><td><code>think(input_text, use_memory=True, stream=True)</code></td><td>Retrieve context and answer using the base agent.</td></tr>
-            </tbody>
-          </table>
+optimist = BaseAgent(name="Optimist", sys_prompt="Find the upside in everything.")
+realist = BaseAgent(name="Realist", sys_prompt="Ground every claim in practical constraints.")
 
-          <h4>Example</h4>
-          <pre><code>from agentic_ai.rag.rag_agent import RAGAgent
-
-agent = RAGAgent(
-    name="DocsBot",
-    sys_prompt="Answer only using retrieved context.",
-    top_k=3,
+transcript = run_conversation(
+    agents=[optimist, realist],
+    opening_message="Should our team adopt a four-day work week?",
+    turns=4,
 )
 
-agent.ingest("""
-agentic-ai-kit supports BaseAgent, ToolAgent, LongTermMemory,
-SQL AI, RAG, MCP, and multi-agent patterns.
-""")
+for line in transcript:
+    print(line)</code></pre>
+    </section>
 
-response = agent.think(
-    "What modules does agentic-ai-kit support?",
-    stream=False,
-)
+    <!-- MCP -->
+    <section class="doc" id="mcp">
+      <div class="section-tag">09 · interop</div>
+      <h2 class="h-main">MCP (Model Context Protocol)</h2>
+      <p class="lead">An MCP-style package for exposing and discovering tools over HTTP, independent of any single agent.</p>
 
-print(response)</code></pre>
-        </div>
+      <table>
+        <tr><th>Class</th><th>File</th><th>Role</th></tr>
+        <tr><td><code>MCPServer</code></td><td><code>agentic_ai/mcp/server.py</code></td><td>Exposes registered tools over HTTP</td></tr>
+        <tr><td><code>MCPClient</code></td><td><code>agentic_ai/mcp/client.py</code></td><td>Discovers and calls remote tools</td></tr>
+      </table>
 
-        <div class="module" id="tools">
-          <div class="module-head">
-            <div>
-              <h3>Tool registry</h3>
-              <p class="muted">Register function metadata for agent-callable tools.</p>
-            </div>
-            <span class="pill">agentic_ai.tools</span>
-          </div>
+      <p>See <code>agentic_ai/examples/11_mcp_demo.py</code> for the current runnable client/server implementation.</p>
+    </section>
 
-          <pre><code>from agentic_ai.tools.registry import ToolRegistry, tool
+    <!-- EXAMPLES -->
+    <section class="doc" id="examples">
+      <div class="section-tag">10 · walkthroughs</div>
+      <h2 class="h-main">Examples</h2>
+      <p class="lead">Eleven runnable scripts, one concept each. Run any of them from the repository root.</p>
 
-ToolRegistry()
+      <table>
+        <tr><th>File</th><th>Concept</th></tr>
+        <tr><td><code>01_talking_agents.py</code></td><td>Round-robin agent conversation</td></tr>
+        <tr><td><code>02_personality_and_memory.py</code></td><td>Persona and memory</td></tr>
+        <tr><td><code>03_tool_agent_weather.py</code></td><td>Gemini function calling</td></tr>
+        <tr><td><code>04_json_agent.py</code></td><td>Structured JSON output</td></tr>
+        <tr><td><code>05_reasoning_agent.py</code></td><td>Planner-to-executor workflow</td></tr>
+        <tr><td><code>06_supervisor.py</code></td><td>Supervisor delegation</td></tr>
+        <tr><td><code>07_parallel_agents.py</code></td><td>Parallel fan-out</td></tr>
+        <tr><td><code>08_debate.py</code></td><td>Debate and judging</td></tr>
+        <tr><td><code>09_long_term_memory.py</code></td><td>Persistent SQLite memory</td></tr>
+        <tr><td><code>10_rag_agent.py</code></td><td>Retrieval-augmented generation</td></tr>
+        <tr><td><code>11_mcp_demo.py</code></td><td>MCP-style tool integration</td></tr>
+      </table>
 
-registry.register(
-    fn,
-    description: str | None = None,
-    params: dict[str, str] | None = None,
-    required: list[str] | None = None,
-)</code></pre>
+<pre><code class="language-bash">python agentic_ai/examples/01_talking_agents.py</code></pre>
+    </section>
 
-          <h4>Decorator example</h4>
-          <pre><code>from agentic_ai.tools.registry import tool
+    <!-- PHILOSOPHY -->
+    <section class="doc" id="philosophy">
+      <div class="section-tag">11 · why it's built this way</div>
+      <h2 class="h-main">Design philosophy</h2>
+      <p class="lead"><code>agentic-ai-kit</code> separates reasoning from deterministic execution.</p>
+      <ul>
+        <li>Agents reason, plan, summarize, route, and communicate.</li>
+        <li>Python functions perform calculations and tool execution.</li>
+        <li>pandas and scikit-learn perform deterministic data analysis and model training.</li>
+        <li>Lightweight orchestration functions coordinate multiple agents.</li>
+        <li>Specialist agents combine deterministic operations with optional LLM interpretation.</li>
+      </ul>
+    </section>
 
-@tool(
-    description="Multiply two numbers",
-    params={"a": "NUMBER", "b": "NUMBER"},
-)
-def multiply(a: float, b: float) -> float:
-    return a * b</code></pre>
-        </div>
+    <!-- NOTES -->
+    <section class="doc" id="notes">
+      <div class="section-tag">12 · caveats</div>
+      <h2 class="h-main">Important notes</h2>
+      <div class="callout warn"><div class="ico">⚠</div><div><p>The <code>model</code> argument on agents refers to the Gemini model, not the predictive model.</p></div></div>
+      <div class="callout warn"><div class="ico">⚠</div><div><p><code>MLEAgent</code> and <code>AutoModelAgent</code> select their predictive scikit-learn candidates internally.</p></div></div>
+      <div class="callout warn"><div class="ico">⚠</div><div><p><code>interpret=False</code> avoids optional Gemini interpretation calls but does not currently remove the API-key requirement during agent construction.</p></div></div>
+      <div class="callout warn"><div class="ico">⚠</div><div><p>Leakage checks are heuristic and must be validated using real feature timing and domain knowledge.</p></div></div>
+      <div class="callout warn"><div class="ico">⚠</div><div><p>Built-in machine-learning workflows are baselines, not replacements for production validation, fairness analysis, monitoring, or expert review.</p></div></div>
+      <div class="callout"><div class="ico">ℹ</div><div><p>The default RAG vector store is in memory and does not persist across sessions.</p></div></div>
+    </section>
 
-        <div class="module" id="patterns">
-          <div class="module-head">
-            <div>
-              <h3>Multi-agent patterns</h3>
-              <p class="muted">Simple orchestration helpers for multiple agents.</p>
-            </div>
-            <span class="pill">agentic_ai.patterns</span>
-          </div>
+    <!-- LICENSE -->
+    <section class="doc" id="license">
+      <div class="section-tag">13 · legal</div>
+      <h2 class="h-main">License</h2>
+      <p>MIT — see the <a href="https://github.com/shashank14581/agentic-ai-kit" target="_blank" rel="noopener">GitHub repository</a> for the full license text.</p>
+    </section>
 
-          <h4>Available functions</h4>
-          <pre><code>run_conversation(
-    agents: list[BaseAgent],
-    opening_message: str,
-    turns: int = 5,
-    verbose: bool = True,
-) -&gt; list[str]
-
-run_supervisor(
-    supervisor: BaseAgent,
-    workers: dict[str, BaseAgent],
-    task: str,
-    verbose: bool = True,
-) -&gt; dict[str, str]
-
-run_parallel(
-    agents: list[BaseAgent],
-    task: str,
-    timeout: float = 60.0,
-) -&gt; dict[str, str]
-
-run_debate(
-    agent_a: BaseAgent,
-    agent_b: BaseAgent,
-    judge: BaseAgent,
-    topic: str,
-    rounds: int = 2,
-) -&gt; dict</code></pre>
-
-          <h4>Parallel example</h4>
-          <pre><code>from agentic_ai.agents import BaseAgent
-from agentic_ai.patterns.parallel import run_parallel
-
-agent_a = BaseAgent("A", "You are practical.", extract_memory=False)
-agent_b = BaseAgent("B", "You are skeptical.", extract_memory=False)
-
-results = run_parallel(
-    agents=[agent_a, agent_b],
-    task="Review this product idea in 3 bullets.",
-)
-
-print(results)</code></pre>
-        </div>
-
-        <div class="module" id="mcp">
-          <div class="module-head">
-            <div>
-              <h3>MCP-style tools</h3>
-              <p class="muted">Minimal local HTTP tool server and client.</p>
-            </div>
-            <span class="pill">agentic_ai.mcp</span>
-          </div>
-
-          <pre><code>from agentic_ai.mcp.server import MCPServer
-from agentic_ai.mcp.client import MCPClient
-
-MCPServer(
-    host: str = "localhost",
-    port: int = 8765,
-)
-
-MCPClient(
-    base_url: str = "http://localhost:8765",
-)</code></pre>
-
-          <h4>Server example</h4>
-          <pre><code>from agentic_ai.mcp.server import MCPServer
-
-server = MCPServer(port=8765)
-
-@server.tool
-def echo(message: str) -&gt; str:
-    return message
-
-server.run()</code></pre>
-
-          <h4>Client example</h4>
-          <pre><code>from agentic_ai.mcp.client import MCPClient
-
-client = MCPClient("http://localhost:8765")
-
-print(client.list_tools())
-print(client.call("echo", message="hello"))</code></pre>
-        </div>
-      </section>
-
-      <section id="examples">
-        <h2>More examples</h2>
-
-        <div class="grid cols-2">
-          <div class="card">
-            <h3>Google Colab SQL AI demo</h3>
-            <pre><code>!pip install -q agentic-ai-kit==0.1.4
-
-import os
-from google.colab import userdata
-
-os.environ["GEMINI_API_KEY"] = userdata.get("GEMINI_API_KEY")</code></pre>
-          </div>
-
-          <div class="card">
-            <h3>Verify package import</h3>
-            <pre><code>from agentic_ai.agents import BaseAgent, ToolAgent
-from agentic_ai.memory.long_term import LongTermMemory
-from agentic_ai.sql_ai import run_ai_sql, parse_ai_sql
-
-print("agentic-ai-kit is ready")</code></pre>
-          </div>
-        </div>
-
-        <h3>Memory + SQL AI direction</h3>
-        <p class="section-lead">
-          A retrieval-focused agent can combine long-term persisted memory with SQL AI relevance enrichment.
-        </p>
-
-        <pre><code>LongTermMemory
-    ↓
-candidate memory rows
-    ↓
-SQL AI relevance classification
-    ↓
-retrieval reasons
-    ↓
-final agent answer</code></pre>
-      </section>
-
-      <section id="pages">
-        
-      </section>
-    </div>
   </main>
+</div>
 
-  <footer>
-    <div class="shell">
-      <strong>agentic-ai-kit</strong>
-      <p>
-        A progressive Python framework for building Gemini-based agentic AI systems.
-      </p>
-    </div>
-  </footer>
+<footer>
+  <div style="max-width:calc(1180px + 272px + 48px); margin:0 auto;">
+    agentic-ai-kit · MIT License · <a href="https://github.com/shashank14581/agentic-ai-kit" target="_blank" rel="noopener">github.com/shashank14581/agentic-ai-kit</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script>
+  hljs.highlightAll();
+
+  // scrollspy for sidebar
+  const links = Array.from(document.querySelectorAll('.sidebar a'));
+  const sections = links
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+
+  function onScroll(){
+    let current = sections[0];
+    const scrollPos = window.scrollY + 90;
+    for (const sec of sections){
+      if (sec.offsetTop <= scrollPos) current = sec;
+    }
+    links.forEach(a => a.classList.remove('active'));
+    if (current){
+      const active = links.find(a => a.getAttribute('href') === '#' + current.id);
+      if (active) active.classList.add('active');
+    }
+  }
+  document.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+</script>
 </body>
 </html>
