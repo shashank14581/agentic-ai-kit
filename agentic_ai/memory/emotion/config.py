@@ -85,6 +85,17 @@ class RetentionConfig:
 
 
 @dataclass(frozen=True)
+class IdentityTransitionConfig:
+    maximum_negative_fact_weight: float = 2.50
+    recurrence_weight_multiplier: float = 1.00
+
+
+@dataclass(frozen=True)
+class PolicyConfig:
+    persistence: float = 0.95
+
+
+@dataclass(frozen=True)
 class ExpectationConfig:
     base_learning_rate: float = 0.05
     salience_learning_rate: float = 0.05
@@ -124,6 +135,10 @@ class EmotionConfig:
     tail_gates: TailGateConfig = field(default_factory=TailGateConfig)
     outcome_regions: OutcomeRegionConfig = field(default_factory=OutcomeRegionConfig)
     retention: RetentionConfig = field(default_factory=RetentionConfig)
+    identity_transition: IdentityTransitionConfig = field(
+        default_factory=IdentityTransitionConfig
+    )
+    policy: PolicyConfig = field(default_factory=PolicyConfig)
     expectation: ExpectationConfig = field(default_factory=ExpectationConfig)
 
     @classmethod
@@ -161,6 +176,8 @@ class EmotionConfig:
         trauma = regions.get("trauma", {})
         retention = raw.get("retention", {})
         floor_weights = retention.get("floor_weights", {})
+        identity_transition = raw.get("identity_transition", {})
+        policy = raw.get("policy", {})
         expectation = raw.get("expectation", {})
 
         return cls(
@@ -232,6 +249,17 @@ class EmotionConfig:
                 avoidance=float(floor_weights.get("avoidance", 0.25)),
                 absolute_identity_pressure=float(floor_weights.get("absolute_identity_pressure", 0.35)),
                 recurring_negative_tail=float(floor_weights.get("recurring_negative_tail", 0.45)),
+            ),
+            identity_transition=IdentityTransitionConfig(
+                maximum_negative_fact_weight=float(
+                    identity_transition.get("maximum_negative_fact_weight", 2.50)
+                ),
+                recurrence_weight_multiplier=float(
+                    identity_transition.get("recurrence_weight_multiplier", 1.00)
+                ),
+            ),
+            policy=PolicyConfig(
+                persistence=float(policy.get("persistence", 0.95)),
             ),
             expectation=ExpectationConfig(
                 base_learning_rate=float(expectation.get("base_learning_rate", 0.05)),
