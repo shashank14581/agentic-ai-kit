@@ -116,6 +116,19 @@ class TreeAttentionConfig:
 
 
 @dataclass(frozen=True)
+class ReinforcementLearningConfig:
+    enabled_during_initial_falsification: bool = False
+    environment_reward_is_primary: bool = True
+    emotion_labels_as_reward: bool = False
+    memory_as_policy_input: bool = True
+    identity_as_policy_input: bool = True
+    discount_factor: float = 0.99
+    learning_rate: float = 0.05
+    epsilon: float = 0.10
+    seed: int = 42
+
+
+@dataclass(frozen=True)
 class IdentityTransitionConfig:
     maximum_negative_fact_weight: float = 2.50
     recurrence_weight_multiplier: float = 1.00
@@ -168,6 +181,9 @@ class EmotionConfig:
     retention: RetentionConfig = field(default_factory=RetentionConfig)
     retrieval: RetrievalConfig = field(default_factory=RetrievalConfig)
     tree_attention: TreeAttentionConfig = field(default_factory=TreeAttentionConfig)
+    reinforcement_learning: ReinforcementLearningConfig = field(
+        default_factory=ReinforcementLearningConfig
+    )
     identity_transition: IdentityTransitionConfig = field(
         default_factory=IdentityTransitionConfig
     )
@@ -213,6 +229,7 @@ class EmotionConfig:
         retrieval = raw.get("retrieval", {})
         tie_break = retrieval.get("bounded_tie_break", {})
         tree_attention = raw.get("tree_attention", {})
+        reinforcement_learning = raw.get("reinforcement_learning", {})
         identity_transition = raw.get("identity_transition", {})
         policy = raw.get("policy", {})
         expectation = raw.get("expectation", {})
@@ -335,6 +352,33 @@ class EmotionConfig:
                 depth_bias_per_level=float(
                     tree_attention.get("depth_bias_per_level", 0.0)
                 ),
+            ),
+            reinforcement_learning=ReinforcementLearningConfig(
+                enabled_during_initial_falsification=bool(
+                    reinforcement_learning.get(
+                        "enabled_during_initial_falsification", False
+                    )
+                ),
+                environment_reward_is_primary=bool(
+                    reinforcement_learning.get("environment_reward_is_primary", True)
+                ),
+                emotion_labels_as_reward=bool(
+                    reinforcement_learning.get("emotion_labels_as_reward", False)
+                ),
+                memory_as_policy_input=bool(
+                    reinforcement_learning.get("memory_as_policy_input", True)
+                ),
+                identity_as_policy_input=bool(
+                    reinforcement_learning.get("identity_as_policy_input", True)
+                ),
+                discount_factor=float(
+                    reinforcement_learning.get("discount_factor", 0.99)
+                ),
+                learning_rate=float(
+                    reinforcement_learning.get("learning_rate", 0.05)
+                ),
+                epsilon=float(reinforcement_learning.get("epsilon", 0.10)),
+                seed=int(reinforcement_learning.get("seed", 42)),
             ),
             identity_transition=IdentityTransitionConfig(
                 maximum_negative_fact_weight=float(

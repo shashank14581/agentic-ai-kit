@@ -183,6 +183,9 @@ reinforcement_learning:
   memory_as_policy_input: true
   identity_as_policy_input: true
   discount_factor: 0.99
+  learning_rate: 0.05
+  epsilon: 0.10
+  seed: 42
 
 correction:
   use_append_only_raw_evidence: true

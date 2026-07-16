@@ -55,6 +55,12 @@ from agentic_ai.memory.emotion.system import (
     EpisodeOperation,
     SystemSnapshot,
 )
+from agentic_ai.memory.emotion.rl import (
+    EncodedRLState,
+    LinearQLearner,
+    RLStateEncoder,
+    TDUpdate,
+)
 
 __all__ = [
     "AffectiveState",
@@ -97,6 +103,10 @@ __all__ = [
     "EpisodeJournalEntry",
     "EpisodeOperation",
     "SystemSnapshot",
+    "EncodedRLState",
+    "LinearQLearner",
+    "RLStateEncoder",
+    "TDUpdate",
     "TransitionResult",
     "build_identity_vector",
 ]

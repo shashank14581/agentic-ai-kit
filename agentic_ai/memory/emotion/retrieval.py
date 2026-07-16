@@ -67,6 +67,7 @@ class RetrievalSelection:
     salience: float
     bounded_adjustment: float
     final_score: float
+    memory_embedding: Vector
     tree_attention: TreeAttentionResult | None = None
 
 
@@ -168,6 +169,11 @@ class RelevanceFirstRetriever:
             if self.config.tree_attention.enabled and candidate.tree is not None:
                 tree_result = self.tree_attention_engine.attend(query, candidate.tree)
                 tree_similarity = cosine(query, tree_result.tree_embedding)
+            memory_embedding = (
+                tree_result.tree_embedding
+                if tree_result is not None
+                else candidate.root_embedding
+            )
             tree_config = self.config.tree_attention
             content_similarity = (
                 tree_config.root_similarity_weight * item.semantic_similarity
@@ -199,6 +205,7 @@ class RelevanceFirstRetriever:
                     salience=salience,
                     bounded_adjustment=adjustment,
                     final_score=content_similarity + adjustment,
+                    memory_embedding=memory_embedding,
                     tree_attention=tree_result,
                 )
             )
