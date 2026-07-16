@@ -505,7 +505,35 @@ $$
 \right)
 $$
 
-The raw effective recurrence count $n_t^{-}$ must also be retained because wound and trauma thresholds may depend on explicit recurrence counts.
+For operational outcome regions, define the total confirmed occurrence count:
+
+$$
+k_t^{-}
+=
+1+
+\sum_{j<t}
+\mathbf{1}
+\left[
+\operatorname{sim}
+\left(
+(c_j,a_j),(c_t,a_t)
+\right)
+\geq\theta_{\text{rec}}
+\land
+d_j^{\text{confirmed}}=-1
+\right]
+$$
+
+when the current event is a confirmed failure. Otherwise, $k_t^{-}=0$.
+
+The weighted value $n_t^{-}$ determines continuous recurrence $\rho_t$.
+The integer value $k_t^{-}$ determines wound and trauma region thresholds.
+Therefore, the second confirmed similar failure has $k_t^{-}=2$, and the
+third has $k_t^{-}=3$.
+
+Both $n_t^{-}$ and $k_t^{-}$ must be retained. The weighted value
+$n_t^{-}$ drives continuous recurrence, while the integer value $k_t^{-}$
+drives wound and trauma thresholds.
 
 Events from unrelated contexts must not contribute to recurrence merely because they share the same outcome label.
 
@@ -945,7 +973,7 @@ $$
 $$
 
 $$
-n_t^{-}\geq n_W
+k_t^{-}\geq n_W
 $$
 
 $$
@@ -967,7 +995,7 @@ or:
 $$
 J_t\geq\theta_T
 \land
-n_t^{-}\geq n_T
+k_t^{-}\geq n_T
 $$
 
 with:

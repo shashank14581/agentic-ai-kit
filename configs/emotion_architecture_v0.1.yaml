@@ -44,6 +44,7 @@ appraisal:
     normalization_scale: 2.0
     wound_count: 2
     trauma_count: 3
+    occurrence_count_includes_current: true
 
   salience_weights:
     valence: 0.30
