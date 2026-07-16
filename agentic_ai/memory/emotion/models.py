@@ -52,10 +52,13 @@ class EvidenceItem:
     reliability: float
     provenance: str
     source: str = "environment"
+    embedding: Vector | None = None
     active: bool = True
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "direction", EvidenceDirection(self.direction))
+        if self.embedding is not None:
+            object.__setattr__(self, "embedding", _freeze_vector(self.embedding))
         _validate_range("magnitude", self.magnitude, 0.0, 1.0)
         _validate_range("reliability", self.reliability, 0.0, 1.0)
         if not self.evidence_id:

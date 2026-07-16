@@ -43,6 +43,11 @@ from agentic_ai.memory.emotion.topology import (
     EventTreeNode,
     TimestepNode,
 )
+from agentic_ai.memory.emotion.tree_attention import (
+    NodeAttention,
+    TreeAttentionEngine,
+    TreeAttentionResult,
+)
 
 __all__ = [
     "AffectiveState",
@@ -77,6 +82,9 @@ __all__ = [
     "EventTree",
     "EventTreeNode",
     "TimestepNode",
+    "NodeAttention",
+    "TreeAttentionEngine",
+    "TreeAttentionResult",
     "TransitionResult",
     "build_identity_vector",
 ]

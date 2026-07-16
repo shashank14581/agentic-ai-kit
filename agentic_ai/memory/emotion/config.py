@@ -102,6 +102,20 @@ class RetrievalConfig:
 
 
 @dataclass(frozen=True)
+class TreeAttentionConfig:
+    enabled: bool = True
+    apply_after_semantic_eligibility: bool = True
+    apply_after_trajectory_deduplication: bool = True
+    preserve_typed_edges: bool = True
+    preserve_provenance_paths: bool = True
+    attention_weights_must_sum_to_one: bool = True
+    allow_cross_tree_attention: bool = False
+    root_similarity_weight: float = 0.50
+    tree_similarity_weight: float = 0.50
+    depth_bias_per_level: float = 0.0
+
+
+@dataclass(frozen=True)
 class IdentityTransitionConfig:
     maximum_negative_fact_weight: float = 2.50
     recurrence_weight_multiplier: float = 1.00
@@ -153,6 +167,7 @@ class EmotionConfig:
     outcome_regions: OutcomeRegionConfig = field(default_factory=OutcomeRegionConfig)
     retention: RetentionConfig = field(default_factory=RetentionConfig)
     retrieval: RetrievalConfig = field(default_factory=RetrievalConfig)
+    tree_attention: TreeAttentionConfig = field(default_factory=TreeAttentionConfig)
     identity_transition: IdentityTransitionConfig = field(
         default_factory=IdentityTransitionConfig
     )
@@ -197,6 +212,7 @@ class EmotionConfig:
         reward_floor = retention.get("reward_floor", {})
         retrieval = raw.get("retrieval", {})
         tie_break = retrieval.get("bounded_tie_break", {})
+        tree_attention = raw.get("tree_attention", {})
         identity_transition = raw.get("identity_transition", {})
         policy = raw.get("policy", {})
         expectation = raw.get("expectation", {})
@@ -289,6 +305,36 @@ class EmotionConfig:
                 retention_weight=float(tie_break.get("retention_weight", 0.02)),
                 salience_weight=float(tie_break.get("salience_weight", 0.02)),
                 maximum_adjustment=float(tie_break.get("maximum_adjustment", 0.05)),
+            ),
+            tree_attention=TreeAttentionConfig(
+                enabled=bool(tree_attention.get("enabled", True)),
+                apply_after_semantic_eligibility=bool(
+                    tree_attention.get("apply_after_semantic_eligibility", True)
+                ),
+                apply_after_trajectory_deduplication=bool(
+                    tree_attention.get("apply_after_trajectory_deduplication", True)
+                ),
+                preserve_typed_edges=bool(
+                    tree_attention.get("preserve_typed_edges", True)
+                ),
+                preserve_provenance_paths=bool(
+                    tree_attention.get("preserve_provenance_paths", True)
+                ),
+                attention_weights_must_sum_to_one=bool(
+                    tree_attention.get("attention_weights_must_sum_to_one", True)
+                ),
+                allow_cross_tree_attention=bool(
+                    tree_attention.get("allow_cross_tree_attention", False)
+                ),
+                root_similarity_weight=float(
+                    tree_attention.get("root_similarity_weight", 0.50)
+                ),
+                tree_similarity_weight=float(
+                    tree_attention.get("tree_similarity_weight", 0.50)
+                ),
+                depth_bias_per_level=float(
+                    tree_attention.get("depth_bias_per_level", 0.0)
+                ),
             ),
             identity_transition=IdentityTransitionConfig(
                 maximum_negative_fact_weight=float(

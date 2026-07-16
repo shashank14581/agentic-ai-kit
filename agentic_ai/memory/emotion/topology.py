@@ -57,6 +57,24 @@ class EventTree:
             raise KeyError(node_id)
         return tuple(node for node in self._nodes.values() if node.parent_id == node_id)
 
+    def path_to_root(self, node_id: str) -> tuple[str, ...]:
+        """Return an evidence/provenance path from root to the selected node."""
+        if node_id not in self._nodes:
+            raise KeyError(node_id)
+        path = []
+        current: str | None = node_id
+        visited = set()
+        while current is not None:
+            if current in visited:
+                raise ValueError("Cycle detected in event tree.")
+            visited.add(current)
+            path.append(current)
+            current = self._nodes[current].parent_id
+        return tuple(reversed(path))
+
+    def depth(self, node_id: str) -> int:
+        return len(self.path_to_root(node_id)) - 1
+
     @classmethod
     def from_transition(
         cls,
@@ -132,7 +150,7 @@ class EventTree:
                         "success-evidence" if int(item.direction) == 1 else "failure-evidence"
                     ),
                     parent_id=evidence_root,
-                    embedding=None,
+                    embedding=item.embedding or event.embedding,
                     provenance=item.provenance,
                     payload=(
                         ("evidence_id", item.evidence_id),

@@ -12,7 +12,11 @@ from agentic_ai.memory.emotion.retention import (
     RetentionEngine,
     RetentionMode,
 )
-from agentic_ai.memory.emotion.topology import TimestepNode
+from agentic_ai.memory.emotion.topology import EventTree, TimestepNode
+from agentic_ai.memory.emotion.tree_attention import (
+    TreeAttentionEngine,
+    TreeAttentionResult,
+)
 
 
 @dataclass(frozen=True)
@@ -21,6 +25,7 @@ class MemoryCandidate:
     trajectory_id: str
     root_embedding: Vector
     transition: TransitionResult
+    tree: EventTree | None = None
     age: float = 0.0
     active: bool = True
     accessible: bool = True
@@ -37,6 +42,7 @@ class MemoryCandidate:
             trajectory_id=node.event.trajectory_id or node.event.event_id,
             root_embedding=node.event.embedding,
             transition=node.transition,
+            tree=node.tree,
             age=max(0, current_timestep - node.timestep),
             active=node.active,
             accessible=True,
@@ -55,10 +61,13 @@ class RetrievalSelection:
     memory_id: str
     trajectory_id: str
     semantic_similarity: float
+    tree_similarity: float
+    content_similarity: float
     retention: float
     salience: float
     bounded_adjustment: float
     final_score: float
+    tree_attention: TreeAttentionResult | None = None
 
 
 @dataclass(frozen=True)
@@ -139,6 +148,7 @@ class RelevanceFirstRetriever:
         self.relevance_gate = RelevanceGate(self.config)
         self.deduplicator = TrajectoryDeduplicator(self.config)
         self.retention_engine = RetentionEngine(self.config)
+        self.tree_attention_engine = TreeAttentionEngine(self.config)
 
     def retrieve(
         self,
@@ -153,6 +163,16 @@ class RelevanceFirstRetriever:
 
         for item in deduplicated:
             candidate = item.candidate
+            tree_result = None
+            tree_similarity = item.semantic_similarity
+            if self.config.tree_attention.enabled and candidate.tree is not None:
+                tree_result = self.tree_attention_engine.attend(query, candidate.tree)
+                tree_similarity = cosine(query, tree_result.tree_embedding)
+            tree_config = self.config.tree_attention
+            content_similarity = (
+                tree_config.root_similarity_weight * item.semantic_similarity
+                + tree_config.tree_similarity_weight * tree_similarity
+            )
             retention = self.retention_engine.evaluate(
                 candidate.transition,
                 candidate.age,
@@ -173,10 +193,13 @@ class RelevanceFirstRetriever:
                     memory_id=candidate.memory_id,
                     trajectory_id=candidate.trajectory_id,
                     semantic_similarity=item.semantic_similarity,
+                    tree_similarity=tree_similarity,
+                    content_similarity=content_similarity,
                     retention=retention,
                     salience=salience,
                     bounded_adjustment=adjustment,
-                    final_score=item.semantic_similarity + adjustment,
+                    final_score=content_similarity + adjustment,
+                    tree_attention=tree_result,
                 )
             )
 

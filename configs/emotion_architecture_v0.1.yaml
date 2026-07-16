@@ -168,6 +168,9 @@ tree_attention:
   enabled: true
   apply_after_semantic_eligibility: true
   apply_after_trajectory_deduplication: true
+  root_similarity_weight: 0.50
+  tree_similarity_weight: 0.50
+  depth_bias_per_level: 0.00
   preserve_typed_edges: true
   preserve_provenance_paths: true
   attention_weights_must_sum_to_one: true
