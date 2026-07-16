@@ -1,0 +1,193 @@
+schema_version: "1.0"
+architecture_version: "0.1"
+profile: "initial-falsification"
+evidence_boundary: "operational-affective-state-only"
+
+reproducibility:
+  seed: 42
+  deterministic: true
+  numeric_tolerance: 1.0e-8
+  store_configuration_with_snapshot: true
+
+embedding:
+  backend: "injected"
+  normalize: true
+  cosine_epsilon: 1.0e-8
+
+evidence:
+  confirmation_threshold: 0.60
+  confirmation_margin: 0.10
+  deduplicate_by_provenance: true
+  disputed_outcome_tail_updates: false
+  disputed_outcome_identity_updates: false
+
+identity:
+  contrastive_weight: 0.50
+  positive_ledger_threshold: 0.55
+  negative_ledger_threshold: 0.55
+  recompute_from_active_facts: true
+  allow_correction: true
+  allow_expiry: true
+  allow_deletion: true
+
+appraisal:
+  ranges:
+    identity_alignment: [-1.0, 1.0]
+    outcome_valence: [-1.0, 1.0]
+    expectation_violation: [-1.0, 1.0]
+    salience: [0.0, 1.0]
+    recurrence: [0.0, 1.0]
+
+  recurrence:
+    semantic_similarity_threshold: 0.80
+    temporal_decay: 0.01
+    normalization_scale: 2.0
+    wound_count: 2
+    trauma_count: 3
+
+  salience_weights:
+    valence: 0.30
+    expectation_violation: 0.25
+    identity_conflict: 0.25
+    outcome_confidence: 0.20
+
+affective_state:
+  repeat:
+    weights:
+      positive_valence: 1.20
+      positive_identity_alignment: 0.60
+      positive_expectation_violation: 0.80
+      salience: 0.50
+    bias: 1.20
+
+  avoidance:
+    weights:
+      negative_valence: 1.10
+      identity_conflict: 0.70
+      negative_expectation_violation: 0.80
+      salience: 0.50
+      recurrence: 0.90
+    bias: 1.40
+
+  tail_gates:
+    positive_threshold: 0.75
+    negative_threshold: 0.70
+    positive_sharpness: 12.0
+    negative_sharpness: 12.0
+
+outcome_regions:
+  success_intensity_weights:
+    repeat: 0.55
+    positive_identity_pressure: 0.30
+    salience: 0.15
+
+  injury_intensity_weights:
+    avoidance: 0.45
+    negative_identity_pressure: 0.25
+    salience: 0.15
+    recurrence: 0.15
+
+  wound:
+    injury_threshold: 0.50
+    identity_conflict_threshold: 0.30
+    recurrence_count: 2
+    extreme_consequence_threshold: 0.70
+
+  trauma:
+    injury_threshold: 0.72
+    recurrence_count: 3
+    extreme_consequence_threshold: 0.90
+
+identity_transition:
+  maximum_negative_fact_weight: 2.50
+  recurrence_weight_multiplier: 1.00
+  ordinary_updates_identity: false
+  isolated_failure_updates_identity: false
+  extreme_success_updates_positive_ledger: true
+  wound_updates_negative_ledger: true
+  trauma_updates_negative_ledger: true
+
+policy:
+  persistence: 0.95
+  update_repeat_from_success: true
+  update_avoidance_from_failure: true
+  keep_separate_from_identity: true
+  require_traceable_source_episode: true
+
+expectation:
+  base_learning_rate: 0.05
+  salience_learning_rate: 0.05
+  recurrence_learning_rate: 0.10
+  identity_pressure_learning_rate: 0.10
+  maximum_learning_rate: 0.30
+  local_context_action_updates_only: true
+
+retention:
+  identity_decay_lambda: 0.01
+  maximum_floor: 0.95
+
+  floor_weights:
+    repeat: 0.30
+    avoidance: 0.25
+    absolute_identity_pressure: 0.35
+    recurring_negative_tail: 0.45
+
+  modes:
+    - "none"
+    - "time"
+    - "identity"
+    - "reward"
+    - "emotion"
+
+  retention_never_grants_relevance: true
+  deletion_overrides_retention: true
+
+retrieval:
+  relevance_first: true
+  semantic_relevance_threshold: 0.55
+  candidate_top_k: 50
+  final_top_k: 6
+  trajectory_deduplication: true
+  maximum_results_per_trajectory: 1
+
+  bounded_tie_break:
+    retention_weight: 0.02
+    salience_weight: 0.02
+    maximum_adjustment: 0.05
+
+tree_attention:
+  enabled: true
+  apply_after_semantic_eligibility: true
+  apply_after_trajectory_deduplication: true
+  preserve_typed_edges: true
+  preserve_provenance_paths: true
+  attention_weights_must_sum_to_one: true
+  allow_cross_tree_attention: false
+
+reinforcement_learning:
+  enabled_during_initial_falsification: false
+  environment_reward_is_primary: true
+  emotion_labels_as_reward: false
+  memory_as_policy_input: true
+  identity_as_policy_input: true
+  discount_factor: 0.99
+
+correction:
+  use_append_only_raw_evidence: true
+  version_derived_snapshots: true
+  replay_after_correction: true
+  replay_after_expiry: true
+  replay_after_deletion: true
+  deleted_memory_is_retrievable: false
+
+falsification:
+  minimum_identity_state_difference: 0.10
+  require_recurrence_monotonicity: true
+  require_isolated_failure_separation: true
+  require_tail_ledger_correctness: true
+  require_retention_ordering: true
+  require_relevance_independence: true
+  require_tree_attention_traceability: true
+  require_policy_direction: true
+  require_correctability: true
+  require_multiple_seeds_for_claims: true
