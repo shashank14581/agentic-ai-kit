@@ -125,6 +125,7 @@ expectation:
 
 retention:
   identity_decay_lambda: 0.01
+  time_decay_lambda: 0.03
   maximum_floor: 0.95
 
   floor_weights:
@@ -132,6 +133,13 @@ retention:
     avoidance: 0.25
     absolute_identity_pressure: 0.35
     recurring_negative_tail: 0.45
+
+  reward_floor:
+    ordinary: 0.00
+    success: 0.25
+    failure: 0.25
+    wound: 0.25
+    trauma: 0.34
 
   modes:
     - "none"

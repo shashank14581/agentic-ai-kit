@@ -122,6 +122,7 @@ class Event:
     action_id: str
     embedding: Vector
     expected_valence: float
+    trajectory_id: str | None = None
     extreme_consequence: float = 0.0
     context_action_embedding: Vector | None = None
     provenance: str = "environment"

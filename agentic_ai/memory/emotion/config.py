@@ -77,11 +77,28 @@ class OutcomeRegionConfig:
 @dataclass(frozen=True)
 class RetentionConfig:
     identity_decay_lambda: float = 0.01
+    time_decay_lambda: float = 0.03
     maximum_floor: float = 0.95
     repeat: float = 0.30
     avoidance: float = 0.25
     absolute_identity_pressure: float = 0.35
     recurring_negative_tail: float = 0.45
+    reward_ordinary_floor: float = 0.0
+    reward_success_floor: float = 0.25
+    reward_failure_floor: float = 0.25
+    reward_wound_floor: float = 0.25
+    reward_trauma_floor: float = 0.34
+
+
+@dataclass(frozen=True)
+class RetrievalConfig:
+    semantic_relevance_threshold: float = 0.55
+    candidate_top_k: int = 50
+    final_top_k: int = 6
+    maximum_results_per_trajectory: int = 1
+    retention_weight: float = 0.02
+    salience_weight: float = 0.02
+    maximum_adjustment: float = 0.05
 
 
 @dataclass(frozen=True)
@@ -135,6 +152,7 @@ class EmotionConfig:
     tail_gates: TailGateConfig = field(default_factory=TailGateConfig)
     outcome_regions: OutcomeRegionConfig = field(default_factory=OutcomeRegionConfig)
     retention: RetentionConfig = field(default_factory=RetentionConfig)
+    retrieval: RetrievalConfig = field(default_factory=RetrievalConfig)
     identity_transition: IdentityTransitionConfig = field(
         default_factory=IdentityTransitionConfig
     )
@@ -176,6 +194,9 @@ class EmotionConfig:
         trauma = regions.get("trauma", {})
         retention = raw.get("retention", {})
         floor_weights = retention.get("floor_weights", {})
+        reward_floor = retention.get("reward_floor", {})
+        retrieval = raw.get("retrieval", {})
+        tie_break = retrieval.get("bounded_tie_break", {})
         identity_transition = raw.get("identity_transition", {})
         policy = raw.get("policy", {})
         expectation = raw.get("expectation", {})
@@ -244,11 +265,30 @@ class EmotionConfig:
             ),
             retention=RetentionConfig(
                 identity_decay_lambda=float(retention.get("identity_decay_lambda", 0.01)),
+                time_decay_lambda=float(retention.get("time_decay_lambda", 0.03)),
                 maximum_floor=float(retention.get("maximum_floor", 0.95)),
                 repeat=float(floor_weights.get("repeat", 0.30)),
                 avoidance=float(floor_weights.get("avoidance", 0.25)),
                 absolute_identity_pressure=float(floor_weights.get("absolute_identity_pressure", 0.35)),
                 recurring_negative_tail=float(floor_weights.get("recurring_negative_tail", 0.45)),
+                reward_ordinary_floor=float(reward_floor.get("ordinary", 0.0)),
+                reward_success_floor=float(reward_floor.get("success", 0.25)),
+                reward_failure_floor=float(reward_floor.get("failure", 0.25)),
+                reward_wound_floor=float(reward_floor.get("wound", 0.25)),
+                reward_trauma_floor=float(reward_floor.get("trauma", 0.34)),
+            ),
+            retrieval=RetrievalConfig(
+                semantic_relevance_threshold=float(
+                    retrieval.get("semantic_relevance_threshold", 0.55)
+                ),
+                candidate_top_k=int(retrieval.get("candidate_top_k", 50)),
+                final_top_k=int(retrieval.get("final_top_k", 6)),
+                maximum_results_per_trajectory=int(
+                    retrieval.get("maximum_results_per_trajectory", 1)
+                ),
+                retention_weight=float(tie_break.get("retention_weight", 0.02)),
+                salience_weight=float(tie_break.get("salience_weight", 0.02)),
+                maximum_adjustment=float(tie_break.get("maximum_adjustment", 0.05)),
             ),
             identity_transition=IdentityTransitionConfig(
                 maximum_negative_fact_weight=float(

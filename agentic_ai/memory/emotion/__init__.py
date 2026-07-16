@@ -23,6 +23,20 @@ from agentic_ai.memory.emotion.models import (
     OutcomeStatus,
     TransitionResult,
 )
+from agentic_ai.memory.emotion.retention import (
+    RetentionEngine,
+    RetentionMode,
+    RetentionResult,
+)
+from agentic_ai.memory.emotion.retrieval import (
+    EligibleCandidate,
+    MemoryCandidate,
+    RelevanceFirstRetriever,
+    RelevanceGate,
+    RetrievalSelection,
+    RetrievalTrace,
+    TrajectoryDeduplicator,
+)
 from agentic_ai.memory.emotion.topology import (
     EpisodicMemoryTimeline,
     EventTree,
@@ -49,6 +63,16 @@ __all__ = [
     "OutcomeStatus",
     "PolicyLedger",
     "PolicyState",
+    "RetentionEngine",
+    "RetentionMode",
+    "RetentionResult",
+    "EligibleCandidate",
+    "MemoryCandidate",
+    "RelevanceFirstRetriever",
+    "RelevanceGate",
+    "RetrievalSelection",
+    "RetrievalTrace",
+    "TrajectoryDeduplicator",
     "EpisodicMemoryTimeline",
     "EventTree",
     "EventTreeNode",

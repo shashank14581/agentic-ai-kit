@@ -75,7 +75,11 @@ class EventTree:
                 parent_id=None,
                 embedding=event.embedding,
                 provenance=event.provenance,
-                payload=(("event_id", event.event_id), ("timestep", event.timestep)),
+                payload=(
+                    ("event_id", event.event_id),
+                    ("timestep", event.timestep),
+                    ("trajectory_id", event.trajectory_id or event.event_id),
+                ),
             )
         )
         tree.add(
