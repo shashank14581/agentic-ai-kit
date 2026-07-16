@@ -48,6 +48,13 @@ from agentic_ai.memory.emotion.tree_attention import (
     TreeAttentionEngine,
     TreeAttentionResult,
 )
+from agentic_ai.memory.emotion.system import (
+    AuditEntry,
+    EmotionMemorySystem,
+    EpisodeJournalEntry,
+    EpisodeOperation,
+    SystemSnapshot,
+)
 
 __all__ = [
     "AffectiveState",
@@ -85,6 +92,11 @@ __all__ = [
     "NodeAttention",
     "TreeAttentionEngine",
     "TreeAttentionResult",
+    "AuditEntry",
+    "EmotionMemorySystem",
+    "EpisodeJournalEntry",
+    "EpisodeOperation",
+    "SystemSnapshot",
     "TransitionResult",
     "build_identity_vector",
 ]
