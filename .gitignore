@@ -1,0 +1,14 @@
+# Python-generated files
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local environments and coverage
+.venv/
+.coverage
+htmlcov/
+
+# Package build output
+build/
+dist/

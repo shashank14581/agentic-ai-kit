@@ -28,6 +28,7 @@ A progressive Python framework for building agentic AI systems with **Google Gem
   - [Short-Term Memory](#short-term-memory)
   - [Long-Term Memory](#long-term-memory)
   - [Shared Memory](#shared-memory)
+  - [Emotion-Aware Episodic Memory](#emotion-aware-episodic-memory)
 - [Tools](#tools)
 - [SQL AI](#sql-ai)
 - [Multi-Agent Patterns](#multi-agent-patterns)
@@ -106,7 +107,16 @@ agentic_ai/
 ├── memory/
 │   ├── short_term.py
 │   ├── long_term.py
-│   └── shared.py
+│   ├── shared.py
+│   └── emotion/
+│       ├── appraisal.py
+│       ├── ledgers.py
+│       ├── topology.py
+│       ├── retention.py
+│       ├── retrieval.py
+│       ├── tree_attention.py
+│       ├── system.py
+│       └── rl.py
 ├── tools/
 │   ├── registry.py
 │   └── builtins.py
@@ -1041,6 +1051,63 @@ shared.clear()
 
 ---
 
+### Emotion-Aware Episodic Memory
+
+**Package:** `agentic_ai.memory.emotion`
+
+The emotion-memory package implements deterministic, operational affective
+state. It does not claim subjective emotion. Its five labels—`ordinary`,
+`success`, `failure`, `wound`, and `trauma`—are derived from continuous
+appraisal and state-transition values.
+
+The implementation includes:
+
+- identity-conditioned appraisal and forgetting,
+- linked timestep memory whose roots contain event trees,
+- separate identity and action-policy ledgers,
+- outcome-dependent retention floors,
+- relevance-first retrieval and trajectory deduplication,
+- relevance-gated NumPy tree attention,
+- correction, expiry, deletion, deterministic replay, and audit records,
+- an RL state encoder and linear Q-learner that use environmental reward.
+
+Outcome salience protects memory survival and fidelity; it never bypasses the
+semantic relevance gate. Operational labels are not used as RL rewards.
+
+#### Runnable Example
+
+The complete demonstration needs no Gemini API key:
+
+```bash
+python agentic_ai/examples/12_emotion_memory.py
+```
+
+It ingests three recurring failures, demonstrates the
+`failure -> wound -> trauma` transition, performs tree-attention retrieval,
+constructs an RL state, applies an environment-reward Q update, then deletes
+one event and deterministically replays the remaining history.
+
+The primary public components are:
+
+| Component | Responsibility |
+|---|---|
+| `EmotionMemorySystem` | Ingestion, correction, replay, retrieval, and audit |
+| `AppraisalEngine` | Identity-sensitive appraisal and operational state |
+| `EpisodicTimeline` | Linked timesteps and rooted event trees |
+| `IdentityLedger` | Positive and negative contrastive self-facts |
+| `PolicyLedger` | Repeat and avoidance evidence |
+| `RetentionEngine` | Identity decay and outcome-dependent floors |
+| `RelevanceFirstRetriever` | Eligibility, deduplication, and bounded ranking |
+| `TreeAttentionEngine` | Attention within an eligible event tree |
+| `RLStateEncoder` | Environment, identity, memory, and policy features |
+| `LinearQLearner` | Deterministic Q-learning with external reward |
+
+The mathematical contract and falsification criteria are documented in
+`docs/emotion_architecture.md`. Default parameters are frozen in
+`configs/emotion_architecture_v0.1.yaml`.
+
+---
+
 ## Tools
 
 `ToolAgent.register_tool()` can expose ordinary Python callables to Gemini.
@@ -1222,6 +1289,7 @@ for the current runnable implementation.
 | `09_long_term_memory.py` | Persistent SQLite memory |
 | `10_rag_agent.py` | Retrieval-augmented generation |
 | `11_mcp_demo.py` | MCP-style tool integration |
+| `12_emotion_memory.py` | Emotion-aware memory, replay, tree attention, and RL |
 
 Run an example from the repository root:
 
@@ -1240,6 +1308,7 @@ python agentic_ai/examples/01_talking_agents.py
 - pandas and scikit-learn perform deterministic data analysis and model training.
 - Lightweight orchestration functions coordinate multiple agents.
 - Specialist agents combine deterministic operations with optional LLM interpretation.
+- Emotion-aware memory keeps relevance, retention, identity, policy, and reward as separate mechanisms.
 
 ---
 

@@ -1,0 +1,546 @@
+fixture_version: "0.1"
+architecture_version: "0.1"
+configuration: "../../configs/emotion_architecture_v0.1.yaml"
+description: "Deterministic falsification fixtures for emotion architecture"
+
+numeric_tolerance: 1.0e-4
+vector_dimension: 4
+
+rules:
+  normalize_identity_vectors: true
+  normalize_retrieval_vectors: true
+  recurrence_count_includes_current: true
+  weighted_recurrence_uses_previous_events: true
+  evidence_is_identical_across_identity_counterfactuals: true
+
+cases:
+
+  # ==========================================================
+  # 1. Same event, different identities
+  # ==========================================================
+  - id: "identity-counterfactual"
+    description: >
+      Two agents receive exactly the same event and confirmed failure.
+      Their observable outcome evidence must remain identical, but their
+      identity alignment, avoidance evidence, and affective state must differ.
+
+    event:
+      event_id: "identity-event-001"
+      context_id: "tool-selection"
+      action_id: "use-unsupported-tool"
+      embedding: [1.0, 0.0, 0.0, 0.0]
+      expected_valence: 0.0
+      extreme_consequence: 0.0
+
+    outcome_evidence:
+      success: []
+      failure:
+        - evidence_id: "failure-proof-001"
+          direction: -1
+          magnitude: 0.90
+          reliability: 1.0
+          provenance: "environment"
+
+    history: []
+
+    agents:
+      aligned_agent:
+        positive_facts:
+          - embedding: [1.0, 0.0, 0.0, 0.0]
+            weight: 1.0
+        negative_facts:
+          - embedding: [0.0, 1.0, 0.0, 0.0]
+            weight: 1.0
+
+      conflicted_agent:
+        positive_facts:
+          - embedding: [0.0, 1.0, 0.0, 0.0]
+            weight: 1.0
+        negative_facts:
+          - embedding: [1.0, 0.0, 0.0, 0.0]
+            weight: 1.0
+
+    expected:
+      success_confidence: 0.0
+      failure_confidence: 0.90
+      valence: -0.90
+
+      aligned_agent:
+        identity_alignment: 0.894427
+        operational_label: "failure"
+
+      conflicted_agent:
+        identity_alignment: -0.447214
+        operational_label: "failure"
+
+      assertions:
+        - "aligned_agent.outcome_evidence == conflicted_agent.outcome_evidence"
+        - "conflicted_agent.avoidance > aligned_agent.avoidance"
+        - "aligned_agent.appraisal != conflicted_agent.appraisal"
+        - "l1_distance(aligned_agent.state, conflicted_agent.state) >= 0.10"
+
+  # ==========================================================
+  # 2. Determinism
+  # ==========================================================
+  - id: "determinism"
+    description: "Identical inputs must reproduce identical outputs."
+
+    source_case: "identity-counterfactual"
+    source_agent: "conflicted_agent"
+    repetitions: 3
+
+    expected:
+      assertions:
+        - "all_appraisal_vectors_equal_within_tolerance"
+        - "all_affective_states_equal_within_tolerance"
+        - "all_operational_labels_equal"
+        - "all_identity_effects_equal"
+        - "all_policy_effects_equal"
+        - "all_retention_values_equal_within_tolerance"
+
+  # ==========================================================
+  # 3. Recurrence progression
+  # ==========================================================
+  - id: "recurrence-progression"
+    description: >
+      The same confirmed failure progresses from isolated failure to wound
+      and then trauma as the total occurrence count reaches two and three.
+
+    identity:
+      supplied_vector: [-0.29, 0.9570266, 0.0, 0.0]
+
+    base_event:
+      context_id: "planning"
+      action_id: "repeat-invalid-plan"
+      embedding: [1.0, 0.0, 0.0, 0.0]
+      expected_valence: 0.0
+      extreme_consequence: 0.0
+
+    outcome_evidence:
+      success: []
+      failure:
+        - evidence_id: "recurring-failure"
+          direction: -1
+          magnitude: 1.0
+          reliability: 1.0
+          provenance: "environment"
+
+    sequence:
+      - timestep: 1
+        previous_similar_failures: 0
+        expected:
+          occurrence_count: 1
+          recurrence: 0.0
+          operational_label: "failure"
+          avoidance_positive: true
+          negative_identity_ledger_update: false
+
+      - timestep: 2
+        previous_similar_failures: 1
+        expected:
+          occurrence_count: 2
+          recurrence_greater_than: 0.0
+          injury_greater_than_previous: true
+          operational_label: "wound"
+          negative_identity_ledger_update: true
+
+      - timestep: 3
+        previous_similar_failures: 2
+        expected:
+          occurrence_count: 3
+          recurrence_greater_than_previous: true
+          injury_greater_than_previous: true
+          operational_label: "trauma"
+          negative_identity_ledger_update: true
+
+    expected:
+      assertions:
+        - "injury_t1 < injury_t2"
+        - "injury_t2 < injury_t3"
+        - "retention_floor_t1 < retention_floor_t2"
+        - "retention_floor_t2 < retention_floor_t3"
+        - "label_sequence == [failure, wound, trauma]"
+
+  # ==========================================================
+  # 4. Isolated failure must not rewrite identity
+  # ==========================================================
+  - id: "isolated-failure-separation"
+    description: >
+      An isolated confirmed failure updates action policy but remains below
+      the identity-ledger threshold.
+
+    source_case: "recurrence-progression"
+    source_timestep: 1
+
+    expected:
+      assertions:
+        - "avoidance > 0"
+        - "avoidance_policy_updated == true"
+        - "absolute(identity_update_pressure) < negative_ledger_threshold"
+        - "positive_identity_ledger_size_change == 0"
+        - "negative_identity_ledger_size_change == 0"
+
+  # ==========================================================
+  # 5. Extreme success enters positive identity tail
+  # ==========================================================
+  - id: "extreme-success-tail"
+    description: >
+      A confirmed, identity-aligned and unexpectedly positive outcome enters
+      the positive identity ledger.
+
+    identity:
+      supplied_vector: [0.8, 0.6, 0.0, 0.0]
+
+    event:
+      event_id: "extreme-success-001"
+      context_id: "tool-selection"
+      action_id: "select-correct-tool"
+      embedding: [1.0, 0.0, 0.0, 0.0]
+      expected_valence: -0.50
+      extreme_consequence: 0.0
+
+    outcome_evidence:
+      success:
+        - evidence_id: "success-proof-001"
+          direction: 1
+          magnitude: 1.0
+          reliability: 1.0
+          provenance: "environment"
+      failure: []
+
+    history: []
+
+    expected:
+      operational_label: "success"
+      success_confidence: 1.0
+      valence: 1.0
+      expectation_violation: 1.0
+
+      assertions:
+        - "repeat > 0"
+        - "identity_update_pressure >= positive_ledger_threshold"
+        - "positive_identity_ledger_size_change == 1"
+        - "negative_identity_ledger_size_change == 0"
+        - "repeat_policy_updated == true"
+        - "retention_floor > 0"
+
+  # ==========================================================
+  # 6. Disputed evidence safety
+  # ==========================================================
+  - id: "disputed-evidence"
+    description: >
+      Equally strong success and failure evidence must not create a tail
+      state or identity update.
+
+    identity:
+      supplied_vector: [1.0, 0.0, 0.0, 0.0]
+
+    event:
+      event_id: "disputed-001"
+      context_id: "factual-answering"
+      action_id: "answer-question"
+      embedding: [1.0, 0.0, 0.0, 0.0]
+      expected_valence: 0.0
+      extreme_consequence: 0.0
+
+    outcome_evidence:
+      success:
+        - evidence_id: "disputed-success"
+          direction: 1
+          magnitude: 0.90
+          reliability: 1.0
+          provenance: "evaluator-a"
+      failure:
+        - evidence_id: "disputed-failure"
+          direction: -1
+          magnitude: 0.90
+          reliability: 1.0
+          provenance: "evaluator-b"
+
+    expected:
+      success_confidence: 0.90
+      failure_confidence: 0.90
+      outcome_status: "disputed"
+      operational_label: "ordinary"
+
+      assertions:
+        - "positive_identity_ledger_size_change == 0"
+        - "negative_identity_ledger_size_change == 0"
+        - "wound == false"
+        - "trauma == false"
+
+  # ==========================================================
+  # 7. Published retention reference
+  # ==========================================================
+  - id: "published-retention-reference"
+    description: >
+      Reference values from the controlled outcome-dynamics experiment at
+      horizon 150. This fixture uses the paper reproduction profile rather
+      than the initial engineering profile.
+
+    profile: "published-paper-reference"
+    horizon: 150
+    allowed_absolute_error: 0.005
+
+    expected:
+      none:
+        ordinary: 1.000
+        success: 1.000
+        failure: 1.000
+        wound: 1.000
+        trauma: 1.000
+
+      time:
+        ordinary: 0.011
+        success: 0.011
+        failure: 0.011
+        wound: 0.011
+        trauma: 0.011
+
+      identity:
+        ordinary: 0.186
+        success: 0.978
+        failure: 0.148
+        wound: 0.024
+        trauma: 0.014
+
+      reward:
+        ordinary: 0.011
+        success: 0.258
+        failure: 0.258
+        wound: 0.258
+        trauma: 0.345
+
+      emotion:
+        ordinary: 0.186
+        success: 0.985
+        failure: 0.301
+        wound: 0.561
+        trauma: 0.852
+
+      assertions:
+        - "emotion.trauma > emotion.wound"
+        - "emotion.wound > emotion.failure"
+        - "emotion.trauma > identity.trauma"
+        - "emotion.wound > identity.wound"
+
+  # ==========================================================
+  # 8. Irrelevant trauma cannot bypass relevance
+  # ==========================================================
+  - id: "irrelevant-trauma-relevance-gate"
+    description: >
+      An irrelevant trauma has maximum salience and retention but must remain
+      outside the eligible candidate set.
+
+    query:
+      embedding: [0.0, 1.0, 0.0, 0.0]
+
+    candidates:
+      - memory_id: "relevant-ordinary"
+        trajectory_id: "trajectory-relevant"
+        root_embedding: [0.0, 1.0, 0.0, 0.0]
+        operational_label: "ordinary"
+        salience: 0.10
+        retention: 0.10
+        deleted: false
+
+      - memory_id: "irrelevant-trauma"
+        trajectory_id: "trajectory-irrelevant"
+        root_embedding: [1.0, 0.0, 0.0, 0.0]
+        operational_label: "trauma"
+        salience: 1.0
+        retention: 0.95
+        deleted: false
+
+    expected:
+      eligible_memory_ids:
+        - "relevant-ordinary"
+
+      ineligible_memory_ids:
+        - "irrelevant-trauma"
+
+      assertions:
+        - "irrelevant-trauma.semantic_similarity < relevance_threshold"
+        - "irrelevant-trauma not in candidate_set"
+        - "irrelevant-trauma not in reader_context"
+
+  # ==========================================================
+  # 9. Trajectory deduplication
+  # ==========================================================
+  - id: "trajectory-deduplication"
+    description: >
+      Similar snapshots from one trajectory must not consume multiple final
+      retrieval slots.
+
+    query:
+      embedding: [1.0, 0.0, 0.0, 0.0]
+      final_top_k: 2
+
+    candidates:
+      - memory_id: "trajectory-a-event-1"
+        trajectory_id: "trajectory-a"
+        semantic_similarity: 0.95
+
+      - memory_id: "trajectory-a-event-2"
+        trajectory_id: "trajectory-a"
+        semantic_similarity: 0.93
+
+      - memory_id: "trajectory-a-event-3"
+        trajectory_id: "trajectory-a"
+        semantic_similarity: 0.91
+
+      - memory_id: "trajectory-b-event-1"
+        trajectory_id: "trajectory-b"
+        semantic_similarity: 0.89
+
+    expected:
+      maximum_results_per_trajectory: 1
+      final_trajectory_ids:
+        - "trajectory-a"
+        - "trajectory-b"
+
+      assertions:
+        - "count(final_results where trajectory_id == trajectory-a) == 1"
+        - "count(final_results where trajectory_id == trajectory-b) == 1"
+
+  # ==========================================================
+  # 10. Deterministic tree attention
+  # ==========================================================
+  - id: "tree-attention-traceability"
+    description: >
+      Tree attention must remain inside an eligible tree and expose normalized
+      node weights and provenance paths.
+
+    attention_configuration:
+      query_projection: "identity"
+      key_projection: "identity"
+      value_projection: "identity"
+      type_bias: 0.0
+      depth_bias: 0.0
+      dimension: 4
+
+    query:
+      embedding: [1.0, 0.0, 0.0, 0.0]
+
+    eligible_tree:
+      memory_id: "tree-001"
+      nodes:
+        - node_id: "root"
+          node_type: "event-root"
+          parent: null
+          embedding: [0.8, 0.2, 0.0, 0.0]
+          provenance: "event-001"
+
+        - node_id: "context"
+          node_type: "context"
+          parent: "root"
+          embedding: [0.0, 1.0, 0.0, 0.0]
+          provenance: "event-001-context"
+
+        - node_id: "action"
+          node_type: "action"
+          parent: "root"
+          embedding: [0.6, 0.4, 0.0, 0.0]
+          provenance: "event-001-action"
+
+        - node_id: "failure-evidence"
+          node_type: "failure-evidence"
+          parent: "root"
+          embedding: [1.0, 0.0, 0.0, 0.0]
+          provenance: "environment"
+
+        - node_id: "snapshot"
+          node_type: "snapshot"
+          parent: "failure-evidence"
+          embedding: [0.9, 0.1, 0.0, 0.0]
+          provenance: "state-transition"
+
+    expected:
+      highest_attention_node: "failure-evidence"
+      attention_weights:
+        root: 0.2113
+        context: 0.1417
+        action: 0.1912
+        failure-evidence: 0.2336
+        snapshot: 0.2222
+
+      assertions:
+        - "sum(attention_weights) == 1 within tolerance"
+        - "all_selected_nodes_belong_to_tree-001"
+        - "no_cross_tree_attention"
+        - "all_selected_nodes_have_provenance"
+        - "snapshot_has_path_to_failure-evidence"
+
+  # ==========================================================
+  # 11. Policy direction
+  # ==========================================================
+  - id: "policy-direction"
+    description: >
+      Confirmed success must increase repeat support, while confirmed failure
+      must increase avoidance for the relevant action.
+
+    sequences:
+      successful_action:
+        context_id: "tool-selection"
+        action_id: "correct-tool"
+        outcomes: ["success", "success", "success"]
+
+      failed_action:
+        context_id: "tool-selection"
+        action_id: "unsupported-tool"
+        outcomes: ["failure", "failure", "failure"]
+
+    expected:
+      assertions:
+        - "repeat_support_success_t1 < repeat_support_success_t2"
+        - "repeat_support_success_t2 < repeat_support_success_t3"
+        - "memory_q_success_t3 > memory_q_success_t1"
+        - "avoidance_failure_t1 < avoidance_failure_t2"
+        - "avoidance_failure_t2 < avoidance_failure_t3"
+        - "memory_q_failure_t3 < memory_q_failure_t1"
+
+  # ==========================================================
+  # 12. Correction, replay, and deletion
+  # ==========================================================
+  - id: "correction-and-deletion"
+    description: >
+      Removing the only supporting evidence for an identity-changing failure
+      must reproduce the state obtained when the failure never occurred.
+
+    initial_state:
+      positive_identity_facts: 1
+      negative_identity_facts: 0
+      repeat_policy_evidence: 0.0
+      avoidance_policy_evidence: 0.0
+
+    operations:
+      - operation: "append_extreme_failure"
+        expected:
+          negative_identity_facts: 1
+          avoidance_policy_increased: true
+          retention_floor_greater_than: 0.0
+
+      - operation: "invalidate_failure_evidence"
+        expected:
+          replay_required: true
+
+      - operation: "delete_event"
+        expected:
+          retrievable: false
+          eligible_for_recurrence: false
+          eligible_for_identity: false
+          eligible_for_policy: false
+
+    expected_final_state:
+      equal_to_initial_state_after_replay: true
+      positive_identity_facts: 1
+      negative_identity_facts: 0
+      repeat_policy_evidence: 0.0
+      avoidance_policy_evidence: 0.0
+
+      assertions:
+        - "deleted_event not in semantic_candidate_set"
+        - "deleted_event not in reader_context"
+        - "deleted_event not in recurrence_history"
+        - "final_identity_vector == replay_without_event.identity_vector"
+        - "final_policy_state == replay_without_event.policy_state"

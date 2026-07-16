@@ -1,0 +1,23 @@
+# Changelog
+
+All notable changes to this project are documented here.
+
+## 0.2.0 - 2026-07-16
+
+### Added
+
+- Deterministic identity-sensitive appraisal with operational outcome regions.
+- Linked timestep memory with rooted event trees.
+- Separate identity and action-policy ledgers.
+- Identity-conditioned forgetting and outcome-dependent retention floors.
+- Relevance-first retrieval, trajectory deduplication, and bounded salience.
+- Relevance-gated NumPy tree attention with traceable node weights.
+- Correction, expiry, deletion, deterministic replay, and audit journaling.
+- Memory-augmented RL state encoding and deterministic linear Q-learning.
+- Falsification fixtures, integration documentation, and a no-API example.
+
+### Evidence boundary
+
+The outcome labels are operational states. They are not claims of subjective
+emotion, and they are not used as reinforcement-learning rewards. Environmental
+reward remains the learning signal; identity and memory are policy inputs.
