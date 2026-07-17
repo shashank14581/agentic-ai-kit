@@ -4,13 +4,27 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-ai-kit"
-version = "0.2.0"
-description = "A progressive framework for building agentic AI systems with Google Gemini."
+version = "0.2.1"
+description = "Build emotion-aware AI agents, adaptive episodic memory, SQL AI, RAG, tools, and Gemini-powered agent systems."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Shashank Singh", email = "shashank14581@gmail.com" }]
-keywords = ["agentic-ai", "llm", "gemini", "agents", "rag", "mcp"]
+keywords = [
+    "agentic-ai",
+    "ai-agents",
+    "emotion-aware-agents",
+    "episodic-memory",
+    "adaptive-memory",
+    "identity-conditioned-memory",
+    "sql-ai",
+    "gemini",
+    "rag",
+    "mcp",
+    "multi-agent",
+    "reinforcement-learning",
+    "tree-attention",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -35,8 +49,11 @@ dependencies = [
 dev = ["pytest", "build", "twine"]
 
 [project.urls]
-Homepage = "https://github.com/shashank14581/agentic-ai-kit"
+Homepage = "https://sites.google.com/view/agentic-ai-kit/"
+Documentation = "https://shashank14581.github.io/agentic-ai-kit/"
 Repository = "https://github.com/shashank14581/agentic-ai-kit"
+Issues = "https://github.com/shashank14581/agentic-ai-kit/issues"
+Changelog = "https://github.com/shashank14581/agentic-ai-kit/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["."]

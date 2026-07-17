@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here.
 
+## 0.2.1 - 2026-07-17
+
+### Changed
+
+- Improved PyPI description and search metadata.
+- Clarified the repository, PyPI distribution, installation, and Python import names.
+- Added documentation, issue tracker, and changelog project links.
+- Removed generated egg-info metadata from source control.
+
 ## 0.2.0 - 2026-07-16
 
 ### Added
