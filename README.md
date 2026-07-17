@@ -1,11 +1,15 @@
 # agentic-ai-kit
 
-A progressive Python framework for building agentic AI systems with **Google Gemini**. It covers conversational agents, structured output, tool use, memory, multi-agent workflows, retrieval-augmented generation, MCP-style tool servers, dataframe analysis, and machine-learning automation.
+**agentic-ai-kit** is an open-source Python framework for building
+emotion-aware AI agents, adaptive episodic memory systems, SQL AI
+workflows, tool-using agents, RAG pipelines, MCP integrations, and
+Gemini-powered multi-agent applications.
 
 > **Naming**
 >
 > - GitHub repository: `agentic-ai-kit`
-> - PyPI package: `agentic-ai`
+> - PyPI package: `agentic-ai-kit`
+> - Installation: `pip install agentic-ai-kit`
 > - Python import package: `agentic_ai`
 
 ---
