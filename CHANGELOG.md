@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## 0.3.0 - 2026-07-25
+
+### Added
+
+- Local transformer-backed conversational memory retrieval.
+- Shared Sentence Transformer model caching across agent instances.
+- Semantic top-k retrieval using normalized sentence embeddings.
+
+### Changed
+
+- Replaced Gemini-based fact extraction with local memory ingestion.
+- Preserved the existing `extract_facts` interface and `facts_store` schema.
+- Updated context construction to retrieve relevant memories instead of including every stored fact.
+- Added pruning and clearing of transformer embedding state.
+
 ## 0.2.1 - 2026-07-17
 
 ### Changed
