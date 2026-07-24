@@ -11,11 +11,14 @@ Every agent has:
 
 from __future__ import annotations
 
-import json
 import os
 
 from google import genai
 from google.genai import types
+
+from agentic_ai.memory.transformer_retriever import (
+    TransformerMemoryRetriever,
+)
 
 
 class BaseAgent:
@@ -45,6 +48,10 @@ class BaseAgent:
         self.memory: list[tuple[str, str]] = []
         self.facts_store: list[dict[str, object]] = []
 
+        # Transformer-backed raw conversational memory.
+        self.memory_top_k = 8
+        self._memory_retriever = TransformerMemoryRetriever()
+
         key = api_key or os.environ.get("GEMINI_API_KEY")
         if not key:
             raise ValueError(
@@ -58,99 +65,38 @@ class BaseAgent:
     # ------------------------------------------------------------------
 
     def extract_facts(self, text: str) -> None:
-        """Extract durable user facts from input using Gemini."""
+        """Store the raw message as locally retrievable memory.
+
+        The method name is retained for backward compatibility.
+        No generative model is used for extraction.
+        """
 
         if not self.extract_memory:
             return
 
-        extraction_prompt = f"""
-You are a memory extraction system.
+        normalized_text = self._memory_retriever.normalize_text(text)
 
-Extract durable facts from the user's message.
+        if not normalized_text:
+            return
 
-A durable fact is something likely to remain useful in future conversations.
-
-Examples of durable facts:
-- User works as a data scientist.
-- User prefers Python.
-- User is building an agentic AI framework.
-- User is learning PyTorch.
-- User works on retail analytics.
-
-Do not extract:
-- Temporary requests
-- Greetings
-- One-off questions
-- Generic statements
-- Facts about the assistant
-- Very sensitive personal information
-
-Return ONLY valid JSON in this exact format:
-
-[
-  {{
-    "fact": "User is building an agentic AI framework.",
-    "confidence": 0.95
-  }}
-]
-
-If there are no durable facts, return:
-
-[]
-
-User message:
-{text}
-""".strip()
+        if self._fact_exists(normalized_text):
+            return
 
         try:
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=extraction_prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0,
-                    thinking_config=types.ThinkingConfig(thinking_budget=0),
-                ),
+            self._memory_retriever.add(normalized_text)
+
+            self.facts_store.append(
+                {
+                    "fact": normalized_text,
+                    "confidence": 1.0,
+                    "source": text,
+                }
             )
-
-            raw_output = (response.text or "").strip()
-            extracted = json.loads(raw_output)
-
-            if not isinstance(extracted, list):
-                return
-
-            for item in extracted:
-                if not isinstance(item, dict):
-                    continue
-
-                fact = str(item.get("fact", "")).strip()
-                confidence = item.get("confidence", 0.0)
-
-                try:
-                    confidence = float(confidence)
-                except (TypeError, ValueError):
-                    confidence = 0.0
-
-                if not fact:
-                    continue
-
-                if confidence < 0.6:
-                    continue
-
-                if self._fact_exists(fact):
-                    continue
-
-                self.facts_store.append(
-                    {
-                        "fact": fact,
-                        "confidence": confidence,
-                        "source": text,
-                    }
-                )
 
             self.trim_facts()
 
         except Exception:
-            # Memory extraction should never break the main agent response.
+            # Memory processing must never stop the main agent response.
             return
 
     def _fact_exists(self, new_fact: str) -> bool:
@@ -166,7 +112,7 @@ User message:
         return False
 
     def build_context(self, input_text: str) -> str:
-        """Assemble facts, recent history, and the new message."""
+        """Assemble retrieved memories, recent history, and the new message."""
 
         recent_turns = self.memory[-self.memory_window :]
 
@@ -175,9 +121,32 @@ User message:
             for user_input, agent_output in recent_turns
         )
 
-        if self.facts_store:
+        try:
+            selected_facts = self._memory_retriever.retrieve(
+                query=input_text,
+                records=self.facts_store,
+                top_k=self.memory_top_k,
+                exclude_latest_query=True,
+            )
+
+        except Exception:
+            # Safe fallback if transformer retrieval is unavailable.
+            fallback_records = list(self.facts_store)
+
+            if fallback_records:
+                latest_fact = str(
+                    fallback_records[-1].get("fact", "")
+                ).strip()
+
+                if latest_fact.lower() == input_text.strip().lower():
+                    fallback_records = fallback_records[:-1]
+
+            selected_facts = fallback_records[-self.memory_top_k :]
+
+        if selected_facts:
             facts_text = "\n".join(
-                f"- {item['fact']}" for item in self.facts_store
+                f"- {item['fact']}"
+                for item in selected_facts
             )
         else:
             facts_text = "(none)"
@@ -198,18 +167,31 @@ User message:
             self.memory = self.memory[-self.max_turns :]
 
     def trim_facts(self) -> None:
-        """Limit number of stored facts."""
+        """Limit the number of stored memory records."""
 
         if self.max_facts < 0:
-            raise ValueError("max_facts must be a non-negative integer.")
+            raise ValueError(
+                "max_facts must be a non-negative integer."
+            )
 
-        self.facts_store = self.facts_store[-self.max_facts :]
+        if self.max_facts == 0:
+            self.facts_store.clear()
+        else:
+            self.facts_store = self.facts_store[-self.max_facts :]
+
+        self._memory_retriever.prune(
+            [
+                str(item.get("fact", ""))
+                for item in self.facts_store
+            ]
+        )
 
     def clear_memory(self) -> None:
-        """Wipe short-term memory and facts store."""
+        """Wipe short-term memory and transformer memory."""
 
         self.memory.clear()
         self.facts_store.clear()
+        self._memory_retriever.clear()
 
     # ------------------------------------------------------------------
     # Core generation
