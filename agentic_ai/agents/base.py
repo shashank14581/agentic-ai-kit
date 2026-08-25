@@ -35,6 +35,9 @@ class BaseAgent:
         max_facts: int = 50,
         extract_memory: bool = True,
         thinking_budget: int = 0,
+        transport: str = "generate_content",
+        thinking_level: str | None = None,
+        client: object | None = None,
     ):
         self.name = name
         self.sys_prompt = sys_prompt
@@ -45,20 +48,36 @@ class BaseAgent:
         self.extract_memory = extract_memory
         self.thinking_budget = thinking_budget
 
+        if transport not in {"generate_content", "interactions"}:
+            raise ValueError(
+                "transport must be 'generate_content' or 'interactions'."
+            )
+
+        self.transport = transport
+        self.thinking_level = thinking_level
+
         self.memory: list[tuple[str, str]] = []
         self.facts_store: list[dict[str, object]] = []
+
+        self.last_interaction: object | None = None
+        self.last_interaction_id: str | None = None
+        self.last_steps: list[object] = []
+        self.last_usage: object | None = None
 
         # Transformer-backed raw conversational memory.
         self.memory_top_k = 8
         self._memory_retriever = TransformerMemoryRetriever()
 
-        key = api_key or os.environ.get("GEMINI_API_KEY")
-        if not key:
-            raise ValueError(
-                "No Gemini API key found. Pass api_key= or set GEMINI_API_KEY."
-            )
+        if client is not None:
+            self.client = client
+        else:
+            key = api_key or os.environ.get("GEMINI_API_KEY")
+            if not key:
+                raise ValueError(
+                    "No Gemini API key found. Pass api_key= or set GEMINI_API_KEY."
+                )
 
-        self.client = genai.Client(api_key=key)
+            self.client = genai.Client(api_key=key)
 
     # ------------------------------------------------------------------
     # Memory helpers
@@ -193,20 +212,21 @@ class BaseAgent:
         self.facts_store.clear()
         self._memory_retriever.clear()
 
+        self.last_interaction = None
+        self.last_interaction_id = None
+        self.last_steps = []
+        self.last_usage = None
+
     # ------------------------------------------------------------------
     # Core generation
     # ------------------------------------------------------------------
 
-    def think(
+    def _think_with_generate_content(
         self,
-        input_text: str,
-        use_memory: bool = True,
-        stream: bool = True,
+        prompt: str,
+        stream: bool,
     ) -> str:
-        """Send input to Gemini and return the full response string."""
-
-        self.extract_facts(input_text)
-        prompt = self.build_context(input_text) if use_memory else input_text
+        """Generate a response through the generateContent API."""
 
         contents = [
             types.Content(
@@ -246,6 +266,173 @@ class BaseAgent:
             )
             response_text = response.text or ""
 
+        return response_text
+
+    def _record_interaction(self, interaction: object) -> None:
+        """Expose metadata from the most recent interaction."""
+
+        self.last_interaction = interaction
+        self.last_interaction_id = getattr(interaction, "id", None)
+        self.last_steps = list(
+            getattr(interaction, "steps", None) or []
+        )
+        self.last_usage = getattr(interaction, "usage", None)
+
+    @staticmethod
+    def _interaction_status(interaction: object) -> str:
+        """Normalize an interaction status to lowercase text."""
+
+        status = getattr(interaction, "status", None)
+        status = getattr(status, "value", status)
+        return str(status).lower()
+
+    def _raise_for_interaction_status(
+        self,
+        interaction: object,
+    ) -> None:
+        """Raise when an interaction did not complete successfully."""
+
+        self._record_interaction(interaction)
+        status = self._interaction_status(interaction)
+
+        if status == "completed":
+            return
+
+        errors = getattr(interaction, "errors", None) or []
+        if not isinstance(errors, (list, tuple)):
+            errors = [errors]
+
+        details = "; ".join(
+            str(getattr(error, "message", error))
+            for error in errors
+        )
+
+        message = (
+            f"Interaction {self.last_interaction_id!r} "
+            f"ended with status {status!r}."
+        )
+
+        if details:
+            message += f" {details}"
+
+        raise RuntimeError(message)
+
+    def _think_with_interactions(
+        self,
+        prompt: str,
+        stream: bool,
+    ) -> str:
+        """Generate a response through the Interactions API."""
+
+        request: dict[str, object] = {
+            "model": self.model,
+            "input": prompt,
+            "system_instruction": self.sys_prompt,
+            "store": False,
+            "stream": stream,
+        }
+
+        if self.thinking_level is not None:
+            request["generation_config"] = {
+                "thinking_level": self.thinking_level
+            }
+
+        result = self.client.interactions.create(**request)
+
+        if not stream:
+            self._raise_for_interaction_status(result)
+            return getattr(result, "output_text", None) or ""
+
+        response_parts: list[str] = []
+        final_interaction: object | None = None
+
+        for event in result:
+            raw_event_type = getattr(event, "event_type", "")
+            event_type = str(
+                getattr(raw_event_type, "value", raw_event_type)
+            ).lower()
+
+            if event_type == "step.delta":
+                delta = getattr(event, "delta", None)
+                raw_delta_type = getattr(delta, "type", "")
+                delta_type = str(
+                    getattr(raw_delta_type, "value", raw_delta_type)
+                ).lower()
+
+                if delta_type == "text":
+                    text = getattr(delta, "text", None) or ""
+                    if text:
+                        print(text, end="", flush=True)
+                        response_parts.append(text)
+
+            elif event_type == "error":
+                error = getattr(event, "error", None)
+                code = getattr(error, "code", None)
+                message = getattr(error, "message", None)
+
+                details = message or str(error or "unknown error")
+                if code:
+                    details = f"{code}: {details}"
+
+                raise RuntimeError(
+                    f"Interactions stream error: {details}"
+                )
+
+            elif event_type in {
+                "interaction.completed",
+                "interaction.failed",
+                "interaction.cancelled",
+            }:
+                final_interaction = getattr(
+                    event,
+                    "interaction",
+                    None,
+                )
+
+        print()
+
+        if final_interaction is None:
+            raise RuntimeError(
+                "Interactions stream ended without a final interaction."
+            )
+
+        self._raise_for_interaction_status(final_interaction)
+
+        response_text = "".join(response_parts)
+        if not response_text:
+            response_text = (
+                getattr(final_interaction, "output_text", None) or ""
+            )
+
+        return response_text
+
+    def think(
+        self,
+        input_text: str,
+        use_memory: bool = True,
+        stream: bool = True,
+    ) -> str:
+        """Send input through the configured Gemini transport."""
+
+        self.extract_facts(input_text)
+        prompt = self.build_context(input_text) if use_memory else input_text
+
+        self.last_interaction = None
+        self.last_interaction_id = None
+        self.last_steps = []
+        self.last_usage = None
+
+        if self.transport == "interactions":
+            response_text = self._think_with_interactions(
+                prompt,
+                stream,
+            )
+        else:
+            response_text = self._think_with_generate_content(
+                prompt,
+                stream,
+            )
+
         self.memory.append((input_text, response_text))
         self.trim_memory()
 
@@ -256,6 +443,7 @@ class BaseAgent:
             f"<{self.__class__.__name__} "
             f"name={self.name!r} "
             f"model={self.model!r} "
+            f"transport={self.transport!r} "
             f"memory_window={self.memory_window!r} "
             f"max_turns={self.max_turns!r} "
             f"max_facts={self.max_facts!r}>"
