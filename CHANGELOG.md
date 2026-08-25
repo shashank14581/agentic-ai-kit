@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## 0.4.0 - 2026-08-25
+
 ### Added
 
 - Opt-in stateless Interactions API transport for `BaseAgent`.
