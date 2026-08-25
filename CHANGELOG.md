@@ -2,6 +2,19 @@
 
 All notable changes to this project are documented here.
 
+## Unreleased
+
+### Added
+
+- Opt-in stateless Interactions API transport for `BaseAgent`.
+- Streaming, non-streaming, metadata, completion-status, and stream-error handling.
+- Contract tests for Interactions request construction and lifecycle events.
+
+### Changed
+
+- Raised the minimum `google-genai` dependency to 2.19.0.
+- Preserved `generate_content` as the default transport for backward compatibility.
+
 ## 0.3.0 - 2026-07-25
 
 ### Added

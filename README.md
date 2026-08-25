@@ -156,6 +156,7 @@ The foundation for all other agents. It supports:
 - recent-turn conversation memory,
 - optional durable-fact extraction,
 - streaming and non-streaming generation,
+- selectable `generate_content` and `interactions` transports,
 - configurable Gemini models.
 
 #### Constructor
@@ -171,6 +172,9 @@ BaseAgent(
     max_facts: int = 50,
     extract_memory: bool = True,
     thinking_budget: int = 0,
+    transport: str = "generate_content",
+    thinking_level: str | None = None,
+    client: object | None = None,
 )
 ```
 
@@ -206,6 +210,20 @@ print(agent.facts_store)
 
 agent.clear_memory()
 ```
+
+---
+
+#### Interactions Transport
+
+`generate_content` remains the default for compatibility. Use `transport="interactions"` to route requests through `client.interactions.create()`.
+
+`agent = BaseAgent(name="Agent", sys_prompt="Be concise.", transport="interactions", thinking_level="low")`
+
+Streaming and non-streaming requests are supported. Failed interactions and stream errors raise `RuntimeError`.
+
+The initial integration is stateless and sends `store=False`, so existing local BaseAgent memory remains the source of conversational context. Server-side continuation with `previous_interaction_id` is not yet enabled.
+
+Response metadata is exposed through `last_interaction`, `last_interaction_id`, `last_steps`, and `last_usage`.
 
 ---
 
