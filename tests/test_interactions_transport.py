@@ -65,7 +65,8 @@ def test_interactions_nonstream_request_and_metadata():
 
 
 def test_interactions_stream_accumulates_text(capsys):
-    interaction = completed_interaction()
+    interaction = completed_interaction(interaction_id="")
+    interaction.steps = []
     events = [
         SimpleNamespace(
             event_type="step.delta",
@@ -95,7 +96,11 @@ def test_interactions_stream_accumulates_text(capsys):
     assert capsys.readouterr().out == "Hello\n"
     assert client.interactions.calls[0]["stream"] is True
     assert client.interactions.calls[0]["store"] is False
-    assert agent.last_interaction_id == "int_1"
+    assert "generation_config" not in client.interactions.calls[0]
+    assert agent.last_interaction is interaction
+    assert agent.last_interaction_id is None
+    assert agent.last_steps == []
+    assert agent.last_usage == interaction.usage
 
 
 def test_interactions_failure_raises_runtime_error():

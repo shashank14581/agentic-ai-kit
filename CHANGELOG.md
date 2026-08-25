@@ -14,6 +14,8 @@ All notable changes to this project are documented here.
 
 - Raised the minimum `google-genai` dependency to 2.19.0.
 - Preserved `generate_content` as the default transport for backward compatibility.
+- Normalized empty stateless interaction IDs to `None`.
+- Clarified model-specific thinking controls and partial streaming metadata.
 
 ## 0.3.0 - 2026-07-25
 
