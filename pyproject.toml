@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-ai-kit"
-version = "0.3.0"
+version = "0.4.0"
 description = "Build emotion-aware AI agents, adaptive episodic memory, SQL AI, RAG, tools, and Gemini-powered agent systems."
 readme = "README.md"
 license = "MIT"
