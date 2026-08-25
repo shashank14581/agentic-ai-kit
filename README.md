@@ -217,13 +217,29 @@ agent.clear_memory()
 
 `generate_content` remains the default for compatibility. Use `transport="interactions"` to route requests through `client.interactions.create()`.
 
-`agent = BaseAgent(name="Agent", sys_prompt="Be concise.", transport="interactions", thinking_level="low")`
+```python
+agent = BaseAgent(
+    name="Agent",
+    sys_prompt="Be concise.",
+    transport="interactions",
+)
+```
+
+Thinking controls are model-specific. With the default
+`gemini-2.5-flash-lite`, leave `thinking_level` unset because the API maps
+`low` to a budget below the model minimum. Use a compatible Gemini 3
+model when configuring `thinking_level`.
 
 Streaming and non-streaming requests are supported. Failed interactions and stream errors raise `RuntimeError`.
 
 The initial integration is stateless and sends `store=False`, so existing local BaseAgent memory remains the source of conversational context. Server-side continuation with `previous_interaction_id` is not yet enabled.
 
 Response metadata is exposed through `last_interaction`, `last_interaction_id`, `last_steps`, and `last_usage`.
+
+With `store=False`, `last_interaction_id` may be `None`. Streaming completion
+events contain a partial interaction snapshot, so `last_steps` may be empty
+even when step deltas produced the returned text. Use non-streaming generation
+when a complete final steps list is required.
 
 ---
 

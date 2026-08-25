@@ -272,7 +272,7 @@ class BaseAgent:
         """Expose metadata from the most recent interaction."""
 
         self.last_interaction = interaction
-        self.last_interaction_id = getattr(interaction, "id", None)
+        self.last_interaction_id = getattr(interaction, "id", None) or None
         self.last_steps = list(
             getattr(interaction, "steps", None) or []
         )
