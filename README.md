@@ -14,6 +14,55 @@ Gemini-powered multi-agent applications.
 
 ---
 
+## AAK 0.5.0
+
+AAK 0.5.0 adds a command-line interface, Agentic SQL AI, and an Antigravity execution runtime.
+
+### CLI
+
+```bash
+aak --help
+
+aak run "Explain gradient descent"
+
+aak run --adapter antigravity "Investigate this problem"
+
+aak chat
+```
+
+### Agentic SQL AI
+
+```bash
+aak sql inspect database.db
+
+aak sql ask database.db "Which category generated the most revenue?" --show-sql
+
+aak sql agent database.db "Investigate which category leads revenue" --trace
+```
+
+The SQL agent can inspect database schema, generate read-only SQLite queries,
+execute them, observe validation or execution failures, repair the SQL,
+retry, and interpret the successful result.
+
+### Antigravity Runtime
+
+```python
+from agentic_ai import BaseAgent
+from agentic_ai.adapters import AntigravityAdapter
+
+agent = BaseAgent(
+    name="AAK",
+    sys_prompt="Be concise.",
+    extract_memory=False,
+)
+
+runtime = AntigravityAdapter(agent)
+
+print(runtime.run("Hello"))
+```
+
+---
+
 ## Table of Contents
 
 - [Installation](#installation)

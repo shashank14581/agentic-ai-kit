@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-ai-kit"
-version = "0.4.0"
+version = "0.5.0"
 description = "Build emotion-aware AI agents, adaptive episodic memory, SQL AI, RAG, tools, and Gemini-powered agent systems."
 readme = "README.md"
 license = "MIT"
@@ -37,6 +37,7 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "google-genai>=2.19.0,<3.0.0",
+    "google-antigravity>=0.1.14,<0.2.0",
     "requests>=2.31.0",
     "numpy>=1.24.0",
     "pandas>=2.0.0",
@@ -62,3 +63,6 @@ include = ["agentic_ai*"]
 
 [tool.setuptools.package-data]
 "agentic_ai" = ["py.typed"]
+
+[project.scripts]
+aak = "agentic_ai.cli.main:main"
