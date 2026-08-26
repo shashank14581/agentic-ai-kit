@@ -12,3 +12,4 @@ htmlcov/
 # Package build output
 build/
 dist/
+/demo.db

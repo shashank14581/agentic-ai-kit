@@ -4,6 +4,26 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## 0.5.0 - 2026-08-26
+
+### Added
+
+- `aak` command-line interface with `run`, `chat`, and SQL workflows.
+- Antigravity runtime adapter with synchronous and asynchronous execution.
+- Google Antigravity as a built-in AAK runtime dependency.
+- SQLite schema inspection through `aak sql inspect`.
+- Natural-language database querying through `aak sql ask`.
+- Agentic SQL execution through `aak sql agent`.
+- Read-only SQL validation and bounded result execution.
+- Autonomous SQL plan, execute, observe, repair, and retry loop.
+- Optional SQL execution traces.
+
+### Changed
+
+- One-shot `aak run` disables conversational memory extraction.
+- `aak chat` retains transformer-backed conversational memory.
+- Agents can run through either the native Gemini runtime or Antigravity.
+
 ## 0.4.0 - 2026-08-25
 
 ### Added
