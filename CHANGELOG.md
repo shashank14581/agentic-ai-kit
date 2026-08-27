@@ -4,6 +4,21 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## 0.5.1 - 2026-08-27
+
+### Fixed
+
+- Reduced CLI startup overhead by lazy-loading package exports, agent modules, runtime adapters, and SQL components.
+- One-shot `aak run` now bypasses conversational memory context and transformer-memory initialization.
+- Antigravity execution no longer constructs the native Gemini agent first.
+- Reduced default installation footprint by making transformer memory and Antigravity optional extras.
+
+### Changed
+
+- Install transformer-backed semantic memory with `agentic-ai-kit[memory]`.
+- Install Antigravity support with `agentic-ai-kit[antigravity]`.
+- Install all optional features with `agentic-ai-kit[full]`.
+
 ## 0.5.0 - 2026-08-26
 
 ### Added

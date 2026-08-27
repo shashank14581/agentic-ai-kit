@@ -1,4 +1,4 @@
-﻿from types import SimpleNamespace
+from types import SimpleNamespace
 
 import agentic_ai.cli.main as cli
 
@@ -21,8 +21,7 @@ def test_run_disables_memory_extraction(monkeypatch):
             captured.update(kwargs)
 
     monkeypatch.setattr(
-        cli,
-        "BaseAgent",
+        "agentic_ai.agents.base.BaseAgent",
         FakeAgent,
     )
 
@@ -39,8 +38,7 @@ def test_chat_enables_memory_extraction(monkeypatch):
             captured.update(kwargs)
 
     monkeypatch.setattr(
-        cli,
-        "BaseAgent",
+        "agentic_ai.agents.base.BaseAgent",
         FakeAgent,
     )
 

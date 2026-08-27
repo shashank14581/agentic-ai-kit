@@ -16,10 +16,6 @@ import os
 from google import genai
 from google.genai import types
 
-from agentic_ai.memory.transformer_retriever import (
-    TransformerMemoryRetriever,
-)
-
 
 class BaseAgent:
     """Core agent backed by a Gemini model."""
@@ -66,7 +62,15 @@ class BaseAgent:
 
         # Transformer-backed raw conversational memory.
         self.memory_top_k = 8
-        self._memory_retriever = TransformerMemoryRetriever()
+
+        if self.extract_memory:
+            from agentic_ai.memory.transformer_retriever import (
+                TransformerMemoryRetriever,
+            )
+
+            self._memory_retriever = TransformerMemoryRetriever()
+        else:
+            self._memory_retriever = None
 
         if client is not None:
             self.client = client
@@ -198,19 +202,21 @@ class BaseAgent:
         else:
             self.facts_store = self.facts_store[-self.max_facts :]
 
-        self._memory_retriever.prune(
-            [
+        if self._memory_retriever is not None:
+            self._memory_retriever.prune(
+                [
                 str(item.get("fact", ""))
                 for item in self.facts_store
-            ]
-        )
+                ]
+            )
 
     def clear_memory(self) -> None:
         """Wipe short-term memory and transformer memory."""
 
         self.memory.clear()
         self.facts_store.clear()
-        self._memory_retriever.clear()
+        if self._memory_retriever is not None:
+            self._memory_retriever.clear()
 
         self.last_interaction = None
         self.last_interaction_id = None

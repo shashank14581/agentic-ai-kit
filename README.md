@@ -14,6 +14,34 @@ Gemini-powered multi-agent applications.
 
 ---
 
+## AAK 0.5.1
+
+AAK 0.5.1 is a performance and packaging hotfix focused on faster CLI startup and a smaller default installation.
+
+### Faster startup
+
+Package exports, agent modules, SQL components, and optional runtimes are now loaded lazily. One-shot `aak run` also skips conversational memory setup.
+
+### Optional feature installs
+
+```bash
+# Core package
+pip install agentic-ai-kit
+
+# Transformer-backed semantic memory
+pip install "agentic-ai-kit[memory]"
+
+# Antigravity runtime
+pip install "agentic-ai-kit[antigravity]"
+
+# All optional features
+pip install "agentic-ai-kit[full]"
+```
+
+The default install no longer pulls `sentence-transformers`, PyTorch/CUDA, or Google Antigravity.
+
+---
+
 ## AAK 0.5.0
 
 AAK 0.5.0 adds a command-line interface, Agentic SQL AI, and an Antigravity execution runtime.

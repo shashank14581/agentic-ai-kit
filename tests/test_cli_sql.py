@@ -1,4 +1,4 @@
-﻿import sqlite3
+import sqlite3
 from types import SimpleNamespace
 
 from agentic_ai.cli.main import (
@@ -134,7 +134,7 @@ def test_sql_ask_command(
         )
 
     monkeypatch.setattr(
-        "agentic_ai.cli.main.ask_sql",
+        "agentic_ai.sql_ai.ask_sql",
         fake_ask_sql,
     )
 

@@ -5,14 +5,7 @@ import sqlite3
 import sys
 from pathlib import Path
 
-from agentic_ai import BaseAgent, __version__
-from agentic_ai.adapters import AntigravityAdapter
-from agentic_ai.sql_ai import (
-    ask_sql,
-    format_schema,
-    inspect_schema,
-    run_sql_agent,
-)
+from agentic_ai import __version__
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -208,7 +201,9 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _create_agent(args: argparse.Namespace) -> BaseAgent:
+def _create_agent(args: argparse.Namespace):
+    from agentic_ai.agents.base import BaseAgent
+
     return BaseAgent(
         name=args.name,
         sys_prompt=args.system,
@@ -219,15 +214,19 @@ def _create_agent(args: argparse.Namespace) -> BaseAgent:
 
 
 def _run_command(args: argparse.Namespace) -> int:
-    agent = _create_agent(args)
-
     if args.adapter == "antigravity":
+        from types import SimpleNamespace
+        from agentic_ai.adapters import AntigravityAdapter
+
+        agent = SimpleNamespace(sys_prompt=args.system)
         runtime = AntigravityAdapter(agent)
         response = runtime.run(args.prompt)
 
     else:
+        agent = _create_agent(args)
         response = agent.think(
             args.prompt,
+            use_memory=False,
             stream=False,
         )
 
@@ -311,6 +310,8 @@ def _connect_read_only(
 
 
 def _sql_inspect_command(args: argparse.Namespace) -> int:
+    from agentic_ai.sql_ai import format_schema, inspect_schema
+
     database_path = _resolve_database_path(
         args.database
     )
@@ -331,6 +332,8 @@ def _sql_inspect_command(args: argparse.Namespace) -> int:
 
 
 def _sql_ask_command(args: argparse.Namespace) -> int:
+    from agentic_ai.sql_ai import ask_sql
+
     database_path = _resolve_database_path(
         args.database
     )
@@ -376,6 +379,8 @@ def _sql_ask_command(args: argparse.Namespace) -> int:
 
 
 def _sql_agent_command(args: argparse.Namespace) -> int:
+    from agentic_ai.sql_ai import run_sql_agent
+
     database_path = _resolve_database_path(
         args.database
     )
