@@ -7,6 +7,7 @@ from agentic_ai.adapters import AntigravityAdapter
 
 class FakeAAKAgent:
     sys_prompt = "You are Alfred."
+    model = "gemini-2.5-flash-lite"
 
 
 class FakeConfig:
@@ -59,6 +60,10 @@ def test_antigravity_adapter_maps_system_prompt():
     assert (
         created["config"].kwargs["system_instructions"]
         == "You are Alfred."
+    )
+    assert (
+        created["config"].kwargs["model"]
+        == "gemini-2.5-flash-lite"
     )
 
 
