@@ -48,6 +48,10 @@ class AntigravityAdapter:
             ),
         )
 
+        model = getattr(self.agent, "model", None)
+        if model is not None:
+            kwargs.setdefault("model", model)
+
         return self._config_factory(**kwargs)
 
     async def arun(self, prompt: str) -> str:
