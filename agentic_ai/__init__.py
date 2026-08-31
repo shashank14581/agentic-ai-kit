@@ -16,7 +16,7 @@ from agentic_ai.memory.long_term import LongTermMemory
 from agentic_ai.memory.shared import SharedMemory
 from agentic_ai.memory.short_term import ShortTermMemory
 
-__version__ = "0.5.3"
+__version__ = "0.5.4"
 
 __all__ = [
     "AutoModelAgent",
