@@ -14,9 +14,9 @@ Gemini-powered multi-agent applications.
 
 ---
 
-## AAK 0.5.4
+## AAK 0.5.5
 
-AAK 0.5.4 includes the command-line interface, Agentic SQL AI, the Antigravity execution runtime, and optional installation extras.
+AAK 0.5.5 includes the command-line interface, Agentic SQL AI, the Antigravity execution runtime, and documented optional installation extras.
 
 ### CLI
 
