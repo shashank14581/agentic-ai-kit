@@ -14,9 +14,9 @@ Gemini-powered multi-agent applications.
 
 ---
 
-## AAK 0.5.0
+## AAK 0.5.4
 
-AAK 0.5.0 adds a command-line interface, Agentic SQL AI, and an Antigravity execution runtime.
+AAK 0.5.4 includes the command-line interface, Agentic SQL AI, the Antigravity execution runtime, and optional installation extras.
 
 ### CLI
 
@@ -93,10 +93,38 @@ print(runtime.run("Hello"))
 
 ## Installation
 
-Install from PyPI:
+Choose the installation that matches the features you need.
+
+### Core
+
+Lightweight AAK installation:
 
 ```bash
 pip install agentic-ai-kit
+```
+
+### Memory
+
+Adds transformer-backed semantic memory:
+
+```bash
+pip install "agentic-ai-kit[memory]"
+```
+
+### Antigravity
+
+Adds the Google Antigravity execution runtime:
+
+```bash
+pip install "agentic-ai-kit[antigravity]"
+```
+
+### Full
+
+Installs all optional AAK capabilities:
+
+```bash
+pip install "agentic-ai-kit[full]"
 ```
 
 Install the latest GitHub version:
